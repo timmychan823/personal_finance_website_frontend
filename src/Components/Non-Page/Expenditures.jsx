@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   Card,
   Table,
@@ -10,22 +10,26 @@ import {
 } from '@mui/material';
 import ExpenditureRow from './ExpenditureRow.jsx';
 import PubSub from 'pubsub-js';
+import { SignalWifiStatusbarConnectedNoInternet4Sharp } from '@mui/icons-material';
+import { SnackBarContext } from './SnackBarContext.jsx';
 
-const Expenditures = () => {
-  const [expendituresList, setExpendituresList] = useState([]);
-  const [expendituresCount, setExpendituresCount] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [controller, setController] = useState({
-    page: 0,
-    rowsPerPage: 10
-  });
+function Expenditures(props) { //getData(), [search, setSearch] and [expendituresList, setExpendituresList] from parent
+  const [search, setSearch] = useState({
+    searchQuery: "",
+    controller: { page: 0, rowsPerPage: 10 }
+  })
+  const [expendituresList, setExpendituresList] = useState({
+    expendituresList: [],
+    expendituresCount: 0
+  })
 
+  const { snackBarDispatch } = useContext(SnackBarContext)
 
   const getData = async () => {
-    console.log(searchQuery)
-    let url = `http://localhost:8090/getAllExpenditure?pageNo=${controller.page}&pageSize=${controller.rowsPerPage}`
-    if (searchQuery != "") {
-      url = `http://localhost:8090/getAllExpenditureByReceiver?receiver=${searchQuery}&pageNo=${controller.page}&pageSize=${controller.rowsPerPage}`
+    console.log("searchQuery: " + search.searchQuery)
+    let url = `http://localhost:8090/getAllExpenditure?pageNo=${search.controller.page}&pageSize=${search.controller.rowsPerPage}`
+    if (search.searchQuery != "") {
+      url = `http://localhost:8090/getAllExpenditureByReceiver?receiver=${search.searchQuery}&pageNo=${search.controller.page}&pageSize=${search.controller.rowsPerPage}`
     }
     try {
       const response = await fetch(url, {
@@ -35,8 +39,8 @@ const Expenditures = () => {
       });
       if (response.status == 200) {
         const data = await response.json();
-        setExpendituresList(data.content);
-        setExpendituresCount(data.totalElements);
+        snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "hi" })
+        setExpendituresList({ expendituresList: data.content, expendituresCount: data.totalElements });
       } else {
         throw new Error('Request failed')
       }
@@ -46,38 +50,27 @@ const Expenditures = () => {
 
   };
 
-
-
-  const turnSubscriptionToSearchQuery = (msg, data) => {
-    setSearchQuery(data)
-  }
-
-
-
-  const subscriberevent = PubSub.subscribe('SearchQuery', turnSubscriptionToSearchQuery)
-
-
-
-  useEffect(() => { getData() }, [controller]);
-
   useEffect(() => {
     getData()
-  }, [searchQuery]);
+  }, [search])
+
 
   const handlePageChange = (event, newPage) => {
-    setController({
-      ...controller,
-      page: newPage
+    setSearch({
+      ...search,
+      controller: { ...search.controller, page: newPage }
     });
+    console.log("hi")
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setController({
-      ...controller,
-      rowsPerPage: parseInt(event.target.value, 10),
-      page: 0
+    setSearch({
+      ...search,
+      controller: { ...search.controller, rowsPerPage: parseInt(event.target.value, 10), page: 0 }
     });
   };
+
+
 
 
   return (
@@ -100,24 +93,26 @@ const Expenditures = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {expendituresList.map((expenditure) => (
-            <ExpenditureRow expenditure={expenditure} />
+          {expendituresList.expendituresList.map((expenditure) => (
+            <ExpenditureRow key={expenditure.transactionID} expenditure={expenditure} />
           ))}
         </TableBody>
       </Table>
       <TablePagination
         component="div"
         onPageChange={handlePageChange}
-        page={controller.page}
-        count={expendituresCount}
-        rowsPerPage={controller.rowsPerPage}
+        page={search.controller.page}
+        count={expendituresList.expendituresCount}
+        rowsPerPage={search.controller.rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[10, 20, 50]}
         showFirstButton={true}
-        sbowLastButton={true}
+        showLastButton={true}
       />
     </Card>
   )
+
+
 }
 
 export default Expenditures;

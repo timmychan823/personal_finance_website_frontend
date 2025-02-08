@@ -7,11 +7,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PubSub from 'pubsub-js'
+import { SnackBarContext } from './SnackBarContext';
 
 export default function AddExpenditureButton() {
     const [open, setOpen] = React.useState(false);
     const [isPositive, setIsPositive] = React.useState(true)
-
+    const { snackBarDispatch } = React.useContext(SnackBarContext)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -22,6 +23,27 @@ export default function AddExpenditureButton() {
         setIsPositive(true);
     };
 
+    async function postData(url, JSONData) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(JSONData)
+            })
+            if (response.ok) {
+                snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "The add operation is successful" })
+
+            } else {
+                throw Error("Some Errors Occured")
+            }
+
+        } catch {
+            snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "The add operation fails" })
+        }
+    }
 
     return (
         <React.Fragment>
@@ -122,23 +144,4 @@ export default function AddExpenditureButton() {
     );
 }
 
-async function postData(url, JSONData) {
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(JSONData)
-        })
-        if (response.ok) {
-            PubSub.publish('SuccessAlert', 'success');
-        } else {
-            throw Error("Some Errors Occured")
-        }
 
-    } catch {
-        PubSub.publish('SuccessAlert', 'error');
-    }
-}

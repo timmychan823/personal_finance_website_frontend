@@ -6,8 +6,6 @@ import '../../styles/ExpenditureRow.css'
 
 function ExpenditureRow(props) {
     const { expenditure } = props
-
-
     return (
         <TableRow key={expenditure.transactionID} className="tableRowExpenditure" onClick={() => { console.log("Row Clicked: " + expenditure.transactionID) }}>
             <TableCell>
@@ -26,6 +24,8 @@ function ExpenditureRow(props) {
         </TableRow>
     )
 }
+
+
 
 
 export default ExpenditureRow

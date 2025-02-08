@@ -2,12 +2,13 @@ import * as React from 'react';
 import { IconButton, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button, TextField } from '@mui/material';
 import PubSub from 'pubsub-js'
 import EditIcon from '@mui/icons-material/Edit';
+import { SnackBarContext } from './SnackBarContext';
 
 export default function EditExpenditureButton(props) {
     const { transactionID, datetime, receiver, cost } = props
     const [open, setOpen] = React.useState(false);
     const [isPositive, setIsPositive] = React.useState(true)
-
+    const { snackBarDispatch } = React.useContext(SnackBarContext)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -29,7 +30,7 @@ export default function EditExpenditureButton(props) {
                 onClose={handleClose}
                 PaperProps={{
                     component: 'form',
-                    onSubmit: (event) => {
+                    onSubmit: async (event) => {
                         event.preventDefault();
                         const formData = new FormData(event.currentTarget);
                         const formJson = Object.fromEntries(formData.entries());
@@ -37,7 +38,24 @@ export default function EditExpenditureButton(props) {
                         formJson.transactionID = transactionID
                         if (cost >= 0) {
                             setIsPositive(true)
-                            updateData('http://localhost:8090/saveExpenditure', formJson)
+                            try {
+                                const response = await fetch('http://localhost:8090/updateExpenditure', {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(formJson)
+                                })
+                                if (response.ok) {
+                                    snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "Successfully Updated" });
+                                } else {
+                                    snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Update fails" })
+                                }
+
+                            } catch {
+                                snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Update fails" })
+                            }
                             handleClose();
                         } else {
                             setIsPositive(false)
@@ -122,23 +140,3 @@ export default function EditExpenditureButton(props) {
     );
 }
 
-async function updateData(url, JSONData) {
-    try {
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(JSONData)
-        })
-        if (response.ok) {
-            PubSub.publish('SuccessAlert', 'success');
-        } else {
-            throw Error("Some Errors Occured")
-        }
-
-    } catch {
-        PubSub.publish('SuccessAlert', 'error');
-    }
-}

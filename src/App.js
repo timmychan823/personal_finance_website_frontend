@@ -1,54 +1,82 @@
-import React, { Component } from 'react'
-import logo from './logo.svg';
+import React, { createContext, useContext, useReducer } from 'react'
 import './App.css';
-import Expenditures from "./Components/Non-Page/Expenditures.jsx"
-import AddExpenditureButton from './Components/Non-Page/AddExpenditureButton.jsx';
-import PubSub from 'pubsub-js'
 import { Snackbar, Alert } from '@mui/material';
-import SearchExpenditure from './Components/Non-Page/SearchExpenditure.jsx';
+import ExpenditurePage from './Components/Page/ExpenditurePage.jsx';
+import { SnackBarContext } from './Components/Non-Page/SnackBarContext.jsx';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.subscriberevent = null;
-    this.state = { successAlertMessage: "", open: false, update: false }
-  }
-
-  componentDidMount() {
-    this.subscriberevent = PubSub.subscribe('SuccessAlert', this.showSnackBar);
-  }
-
-  showSnackBar = (msg, data) => {
-    this.setState({ ...this.state, successAlertMessage: data, open: true }, () => {
-      if (data == "success") {
-        this.setState({ ...this.state, update: !this.state.update })
+export default function App(props) {
+  const snackBarReducer = (state, action) => {
+    if (action.show == "SHOW") {
+      switch (action.type) {
+        case "SHOW SUCCESS":
+          return {
+            ...state,
+            open: true,
+            level: "success",
+            message: action.message
+          }
+        case "SHOW INFO":
+          return {
+            ...state,
+            open: true,
+            level: "info",
+            message: action.message
+          }
+        case "SHOW WARNING":
+          return {
+            ...state,
+            open: true,
+            level: "warning",
+            message: action.message
+          }
+        case "SHOW ERROR":
+          return {
+            ...state,
+            open: true,
+            level: "error",
+            message: action.message
+          }
       }
-    })
+    } else {
+      return {
+        ...state,
+        open: false
+      }
+    }
 
-  };
+  }
+  const [snackBarVariable, snackBarDispatch] = useReducer(snackBarReducer, { open: false, level: "", message: "" })
 
-  handleClose = (event, reason) => {
-    this.setState({ open: false });
-  };
-
-  render() {
-    return (
-      <div>
-        <SearchExpenditure />
-        <AddExpenditureButton />
-        <Expenditures key={this.state.update} />
-        <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleClose}>
+  return (
+    // <div>
+    //   <DatetimeRangeSelector />
+    //   <SearchExpenditure />
+    //   <AddExpenditureButton />
+    //   <Expenditures />
+    //   <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleClose}>
+    //     <Alert
+    //       severity={this.state.successAlertMessage}
+    //       variant="filled"
+    //       sx={{ minWidth: '400px' }}
+    //     >
+    //       {this.state.successAlertMessage}
+    //     </Alert>
+    //   </Snackbar>
+    // </div>
+    <>
+      <SnackBarContext.Provider value={{ snackBarDispatch }}>
+        <Snackbar open={snackBarVariable.open} autoHideDuration={6000} onClose={() => snackBarDispatch({ show: "DONT SHOW", type: "", message: "" })}>
           <Alert
-            severity={this.state.successAlertMessage}
+            severity={snackBarVariable.level}
             variant="filled"
-            sx={{ minWidth: '400px' }}
-          >
-            {this.state.successAlertMessage}
+            sx={{ minWidth: '400px' }}>
+            {snackBarVariable.message}
           </Alert>
         </Snackbar>
-      </div>
-    )
-  }
-
+        <ExpenditurePage>
+        </ExpenditurePage>
+      </SnackBarContext.Provider>
+    </>
+  )
 }
 

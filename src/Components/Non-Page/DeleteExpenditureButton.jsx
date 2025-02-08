@@ -1,12 +1,14 @@
-import React from 'react'
-import deleteData from '../../helpers/CRUD_data.js'
+import React, { useContext } from 'react'
 import { IconButton, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { SnackBarContext } from './SnackBarContext';
 
 //change this 
 function DeleteExpenditureButton(props) {
     const [open, setOpen] = React.useState(false);
     const { url, params } = props
+    const { snackBarDispatch } = useContext(SnackBarContext)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -25,16 +27,34 @@ function DeleteExpenditureButton(props) {
                 onClose={handleClose}
                 PaperProps={{
                     component: 'form',
-                    onSubmit: (event) => {
+                    onSubmit: async (event) => {
                         event.preventDefault();
 
-                        deleteData(url, params)
+                        try {
+                            const response = await fetch(url + params, {
+                                method: "Delete",
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            if (response.ok) {
+                                snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "Successfully deleted" })
+                            } else {
+                                snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Some Error Occurs while deleting" })
+                            }
+
+                        } catch {
+                            snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Some Error Occurs while deleting" })
+                        }
                         handleClose();
+                    }
 
 
 
-                    },
-                }}
+
+                }
+                }
             >
                 <DialogTitle>Delete Expenditure</DialogTitle>
                 <DialogContent>
