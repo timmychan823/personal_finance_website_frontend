@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 import { useState, useContext, useEffect } from 'react'
-=======
-import React from 'react'
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 import DatetimeRangeSelector from '../Non-Page/DatetimeRangeSelector'
 import SearchExpenditure from '../Non-Page/SearchExpenditure'
 import AddExpenditureButton from '../Non-Page/AddExpenditureButton'
 import Expenditures from '../Non-Page/Expenditures'
-<<<<<<< HEAD
 import { SnackBarContext, SearchBarExpenditureContext, IsLoadingContext } from '../Non-Page/Context'
 import { Stack } from '@mui/material'
 
@@ -72,16 +67,6 @@ function ExpenditurePage() {
                 </Stack >
             </SearchBarExpenditureContext.Provider >
 
-=======
-
-function ExpenditurePage() {
-    return (
-        <>
-            <DatetimeRangeSelector />
-            <SearchExpenditure />
-            <AddExpenditureButton />
-            <Expenditures />
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
 
         </>

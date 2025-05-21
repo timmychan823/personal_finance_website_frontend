@@ -7,7 +7,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PubSub from 'pubsub-js'
-<<<<<<< HEAD
 import { SnackBarContext, SearchBarExpenditureContext, IsLoadingContext } from './Context';
 
 export default function AddExpenditureButton(props) {
@@ -17,14 +16,6 @@ export default function AddExpenditureButton(props) {
     const { getData } = React.useContext(SearchBarExpenditureContext)
     const { setIsLoading } = React.useContext(IsLoadingContext)
     const { buttonVariant, buttonSx } = props
-=======
-import { SnackBarContext } from './SnackBarContext';
-
-export default function AddExpenditureButton() {
-    const [open, setOpen] = React.useState(false);
-    const [isPositive, setIsPositive] = React.useState(true)
-    const { snackBarDispatch } = React.useContext(SnackBarContext)
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -46,7 +37,6 @@ export default function AddExpenditureButton() {
                 body: JSON.stringify(JSONData)
             })
             if (response.ok) {
-<<<<<<< HEAD
                 snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "The add operation is successful" });
                 if (getData != undefined) {
                     getData();
@@ -59,26 +49,12 @@ export default function AddExpenditureButton() {
         } catch (err) {
             snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "The add operation fails" })
             console.log(err)
-=======
-                snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "The add operation is successful" })
-
-            } else {
-                throw Error("Some Errors Occured")
-            }
-
-        } catch {
-            snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "The add operation fails" })
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
         }
     }
 
     return (
         <React.Fragment>
-<<<<<<< HEAD
             <Button variant={buttonVariant} sx={{ ...buttonSx }} onClick={handleClickOpen}>
-=======
-            <Button variant="outlined" onClick={handleClickOpen}>
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
                 Add Expenditure
             </Button>
             <Dialog
@@ -93,11 +69,7 @@ export default function AddExpenditureButton() {
                         const cost = formJson.cost
                         if (cost >= 0) {
                             setIsPositive(true)
-<<<<<<< HEAD
                             postData('/expenditure', formJson)
-=======
-                            postData('http://localhost:8090/saveExpenditure', formJson)
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
                             handleClose();
                         } else {
                             setIsPositive(false)
@@ -179,11 +151,7 @@ export default function AddExpenditureButton() {
     );
 }
 
-<<<<<<< HEAD
 AddExpenditureButton.defaultProps = {
     buttonVariant: 'text',
     buttonSx: {}
 };
-=======
-
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc

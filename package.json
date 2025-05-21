@@ -15,10 +15,7 @@
     "pubsub-js": "^1.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-<<<<<<< HEAD
     "react-router-dom": "^7.1.5",
-=======
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -45,11 +42,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-<<<<<<< HEAD
   },
   "proxy": "http://backend:8090"
 }
-=======
-  }
-}
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc

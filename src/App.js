@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { createContext, useContext, useReducer, useState } from 'react'
 import './App.css';
 import { ListItem, List, Snackbar, Drawer, Alert, Backdrop, CircularProgress, Toolbar, AppBar, Typography, Button, Stack, Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@mui/material';
@@ -10,13 +9,6 @@ import { SnackBarContext } from './Components/Non-Page/Context.jsx';
 import { IsLoadingContext } from './Components/Non-Page/Context.jsx';
 import RemindersPage from './Components/Page/RemindersPage.jsx';
 import Box from "@mui/material/Box"
-=======
-import React, { createContext, useContext, useReducer } from 'react'
-import './App.css';
-import { Snackbar, Alert } from '@mui/material';
-import ExpenditurePage from './Components/Page/ExpenditurePage.jsx';
-import { SnackBarContext } from './Components/Non-Page/SnackBarContext.jsx';
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
 export default function App(props) {
   const snackBarReducer = (state, action) => {
@@ -60,7 +52,6 @@ export default function App(props) {
 
   }
   const [snackBarVariable, snackBarDispatch] = useReducer(snackBarReducer, { open: false, level: "", message: "" })
-<<<<<<< HEAD
   const [IsLoading, setIsLoading] = useState(true)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [anchorE1, setAnchorE1] = useState(null)
@@ -161,38 +152,6 @@ export default function App(props) {
 
         </IsLoadingContext.Provider>
       </SnackBarContext.Provider >
-=======
-
-  return (
-    // <div>
-    //   <DatetimeRangeSelector />
-    //   <SearchExpenditure />
-    //   <AddExpenditureButton />
-    //   <Expenditures />
-    //   <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleClose}>
-    //     <Alert
-    //       severity={this.state.successAlertMessage}
-    //       variant="filled"
-    //       sx={{ minWidth: '400px' }}
-    //     >
-    //       {this.state.successAlertMessage}
-    //     </Alert>
-    //   </Snackbar>
-    // </div>
-    <>
-      <SnackBarContext.Provider value={{ snackBarDispatch }}>
-        <Snackbar open={snackBarVariable.open} autoHideDuration={6000} onClose={() => snackBarDispatch({ show: "DONT SHOW", type: "", message: "" })}>
-          <Alert
-            severity={snackBarVariable.level}
-            variant="filled"
-            sx={{ minWidth: '400px' }}>
-            {snackBarVariable.message}
-          </Alert>
-        </Snackbar>
-        <ExpenditurePage>
-        </ExpenditurePage>
-      </SnackBarContext.Provider>
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
     </>
   )
 }

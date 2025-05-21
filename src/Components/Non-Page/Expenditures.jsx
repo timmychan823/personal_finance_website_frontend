@@ -11,57 +11,12 @@ import {
 import ExpenditureRow from './ExpenditureRow.jsx';
 import PubSub from 'pubsub-js';
 import { SignalWifiStatusbarConnectedNoInternet4Sharp } from '@mui/icons-material';
-<<<<<<< HEAD
 import { SnackBarContext } from './Context.jsx';
 
 function Expenditures(props) { // [search, setSearch] and [expendituresList, setExpendituresList] from parent
   const { search, setSearch } = props
   const { expendituresList, setExpendituresList } = props
 
-=======
-import { SnackBarContext } from './SnackBarContext.jsx';
-
-function Expenditures(props) { //getData(), [search, setSearch] and [expendituresList, setExpendituresList] from parent
-  const [search, setSearch] = useState({
-    searchQuery: "",
-    controller: { page: 0, rowsPerPage: 10 }
-  })
-  const [expendituresList, setExpendituresList] = useState({
-    expendituresList: [],
-    expendituresCount: 0
-  })
-
-  const { snackBarDispatch } = useContext(SnackBarContext)
-
-  const getData = async () => {
-    console.log("searchQuery: " + search.searchQuery)
-    let url = `http://localhost:8090/getAllExpenditure?pageNo=${search.controller.page}&pageSize=${search.controller.rowsPerPage}`
-    if (search.searchQuery != "") {
-      url = `http://localhost:8090/getAllExpenditureByReceiver?receiver=${search.searchQuery}&pageNo=${search.controller.page}&pageSize=${search.controller.rowsPerPage}`
-    }
-    try {
-      const response = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-        }
-      });
-      if (response.status == 200) {
-        const data = await response.json();
-        snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "hi" })
-        setExpendituresList({ expendituresList: data.content, expendituresCount: data.totalElements });
-      } else {
-        throw new Error('Request failed')
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-  };
-
-  useEffect(() => {
-    getData()
-  }, [search])
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
 
   const handlePageChange = (event, newPage) => {
@@ -75,11 +30,7 @@ function Expenditures(props) { //getData(), [search, setSearch] and [expenditure
   const handleChangeRowsPerPage = (event) => {
     setSearch({
       ...search,
-<<<<<<< HEAD
       controller: { ...search.controller, rowsPerPage: parseInt(event.target.value), page: 0 }
-=======
-      controller: { ...search.controller, rowsPerPage: parseInt(event.target.value, 10), page: 0 }
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
     });
   };
 
@@ -118,11 +69,7 @@ function Expenditures(props) { //getData(), [search, setSearch] and [expenditure
         count={expendituresList.expendituresCount}
         rowsPerPage={search.controller.rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-<<<<<<< HEAD
         rowsPerPageOptions={[20, 50, 100]}
-=======
-        rowsPerPageOptions={[10, 20, 50]}
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
         showFirstButton={true}
         showLastButton={true}
       />

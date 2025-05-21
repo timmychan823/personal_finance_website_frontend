@@ -1,14 +1,10 @@
 import React from 'react'
 import { TextField, Stack } from '@mui/material'
 
-<<<<<<< HEAD
 function DatetimeRangeSelector(props) {
     const { search, setSearch } = props
     const { expendituresList, setExpendituresList } = props
 
-=======
-function DatetimeRangeSelector() {
->>>>>>> c81439c75d229ced839b60e466e373cd926236bc
     return (
         <React.Fragment>
 
