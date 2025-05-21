@@ -2,14 +2,21 @@ import * as React from 'react';
 import { IconButton, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button, TextField } from '@mui/material';
 import PubSub from 'pubsub-js'
 import EditIcon from '@mui/icons-material/Edit';
+<<<<<<< HEAD
 import { SnackBarContext, SearchBarExpenditureContext } from './Context';
+=======
+import { SnackBarContext } from './SnackBarContext';
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
 export default function EditExpenditureButton(props) {
     const { transactionID, datetime, receiver, cost } = props
     const [open, setOpen] = React.useState(false);
     const [isPositive, setIsPositive] = React.useState(true)
     const { snackBarDispatch } = React.useContext(SnackBarContext)
+<<<<<<< HEAD
     const { getData } = React.useContext(SearchBarExpenditureContext)
+=======
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -40,7 +47,11 @@ export default function EditExpenditureButton(props) {
                         if (cost >= 0) {
                             setIsPositive(true)
                             try {
+<<<<<<< HEAD
                                 const response = await fetch('/expenditure', {
+=======
+                                const response = await fetch('http://localhost:8090/updateExpenditure', {
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
                                     method: 'PUT',
                                     headers: {
                                         'Accept': 'application/json',
@@ -50,8 +61,11 @@ export default function EditExpenditureButton(props) {
                                 })
                                 if (response.ok) {
                                     snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "Successfully Updated" });
+<<<<<<< HEAD
                                     getData();
 
+=======
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
                                 } else {
                                     snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Update fails" })
                                 }

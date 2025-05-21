@@ -1,14 +1,21 @@
 import React, { useContext } from 'react'
 import { IconButton, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+<<<<<<< HEAD
 import { SnackBarContext, SearchBarExpenditureContext } from './Context';
+=======
+import { SnackBarContext } from './SnackBarContext';
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
 //change this 
 function DeleteExpenditureButton(props) {
     const [open, setOpen] = React.useState(false);
     const { url, params } = props
     const { snackBarDispatch } = useContext(SnackBarContext)
+<<<<<<< HEAD
     const { getData } = useContext(SearchBarExpenditureContext)
+=======
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -41,7 +48,10 @@ function DeleteExpenditureButton(props) {
                             })
                             if (response.ok) {
                                 snackBarDispatch({ show: "SHOW", type: "SHOW SUCCESS", message: "Successfully deleted" })
+<<<<<<< HEAD
                                 getData();
+=======
+>>>>>>> c81439c75d229ced839b60e466e373cd926236bc
                             } else {
                                 snackBarDispatch({ show: "SHOW", type: "SHOW ERROR", message: "Some Error Occurs while deleting" })
                             }
