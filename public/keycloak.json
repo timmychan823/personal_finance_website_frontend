@@ -1,0 +1,15 @@
+{
+  "realm": "personalFinanceWebsite",
+  "auth-server-url": "http://localhost:18000/",
+  "ssl-required": "none",
+  "resource": "personalFinanceWebsite",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "EKdku2IlJ3UqmFI6I8EIYc8KnWyYcqIl"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0,
+  "policy-enforcer": {
+    "credentials": {}
+  }
+}
