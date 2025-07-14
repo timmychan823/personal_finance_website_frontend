@@ -1,0 +1,65 @@
+module.exports = {
+  roots: ["<rootDir>/src"],
+  preset: "ts-jest",
+  collectCoverage: true,
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "stories.tsx",
+    "index.tsx",
+    "index.ts",
+    "interface.ts",
+    "/constants/",
+  ],
+  coverageDirectory: "coverage",
+  // setupFiles: ['react-app-polyfill/jsdom'], //check this later
+  setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
+  testMatch: [
+    "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+    "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}",
+    "**/?(*.)+(test).ts?(x)",
+  ],
+  testEnvironment: "jsdom",
+  // transform: {
+  //     '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$':
+  //         '<rootDir>/bin/jest/babelTransform.js',
+  //     '^.+\\.css$': '<rootDir>/bin/jest/cssTransform.js',
+  //     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
+  //         '<rootDir>/bin/jest/fileTransform.js',
+  // },
+  // transformIgnorePatterns: [
+  //     '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+  //     '^.+\\.module\\.(css|sass|scss)$',
+  // ],
+  moduleDirectories: ["node_modules", "src"],
+  modulePaths: [],
+  // moduleNameMapper: {
+  //     '^public(.*)$': '<rootDir>/public/$1',
+  //     '^components(.*)$': '<rootDir>/src/components/$1',
+  //     '^atoms(.*)$': '<rootDir>/src/components/atoms/$1',
+  //     '^molecules(.*)$': '<rootDir>/src/components/molecules/$1',
+  //     '^organisms(.*)$': '<rootDir>/src/components/organisms/$1',
+  //     '^templates(.*)$': '<rootDir>/src/components/templates/$1',
+  //     '^themes(.*)$': '<rootDir>/src/components/themes/$1',
+  //     '^hooks(.*)$': '<rootDir>/src/hooks/$1',
+  //     '^utils(.*)$': '<rootDir>/src/utils/$1',
+  //     '\\svg': '<rootDir>/__mocks__/svg.js',
+  // },
+  moduleFileExtensions: [
+    "web.js",
+    "js",
+    "web.ts",
+    "ts",
+    "web.tsx",
+    "tsx",
+    "json",
+    "web.jsx",
+    "jsx",
+    "node",
+  ],
+  // watchPlugins: [
+  //     'jest-watch-typeahead/filename',
+  //     'jest-watch-typeahead/testname',
+  // ],
+  resetMocks: true,
+};
