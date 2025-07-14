@@ -15,14 +15,19 @@ export async function authenticate(username: string, password: string){
                 body: new URLSearchParams({ username: username, password: password, grant_type: "password", scope: AUTH_CONSTANTS.SCOPE, client_id: AUTH_CONSTANTS.CLIENT_ID, client_secret: AUTH_CONSTANTS.CLIENT_SECRET})
             }
         )
+        if (!response.ok) { // response.ok is true for 2xx status codes
+            const errorBody = await response.json(); // Or response.text() depending on content type
+            throw new Error(`HTTP Error: ${response.status} - ${response.statusText || 'Unknown error'}`);
+        }
         data = await response.json();
         console.log("auth success")
-    }catch{
+        localStorage.setItem('accessToken', data.access_token) //TODO: CRUD on localStorage should not be done in service
+        localStorage.setItem('refreshToken', data.refresh_token)
+    }catch (error: unknown){
         //pass
         console.error("auth error") //TODO: dispatch an error, showing a invalid pop up or something like that
+        throw error;
     }
-    localStorage.setItem('accessToken', data.access_token) //TODO: CRUD on localStorage should not be done in service
-    localStorage.setItem('refreshToken', data.refresh_token)
 
 }
 

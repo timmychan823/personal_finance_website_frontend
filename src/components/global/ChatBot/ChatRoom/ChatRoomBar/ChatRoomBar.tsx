@@ -8,9 +8,9 @@ import { UserProfile } from 'types/userProfile/interfaces';
 import Avatar from '@mui/material/Avatar';
 
 const ChatRoomBar = () => {
-    const {status, setStatus} = useChatBotContext();
+    const {chatRoomDisplayStatus, setChatRoomDisplayStatus} = useChatBotContext();
     const closeChatRoom = () =>{
-        setStatus(status=>!status)
+        setChatRoomDisplayStatus(chatRoomDisplayStatus=>!chatRoomDisplayStatus)
     }
     const botProfile: UserProfile = {
         username: "Bot",
@@ -20,7 +20,7 @@ const ChatRoomBar = () => {
     return (
         <Stack width="100%" direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Stack direction="row" alignItems="center" spacing={2} sx={{padding: "10px 10px", margin:"10px 10px"}}>
-                <Avatar alt={botProfile.UserImage} src={botProfile.UserImage} />
+                <Avatar alt={botProfile.userName} src={botProfile.userImage} />
                 <h4>ChatRoom</h4>
             </Stack>
             <IconButton             

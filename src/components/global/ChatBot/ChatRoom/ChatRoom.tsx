@@ -8,26 +8,44 @@ import PromptBar from './PromptBar/PromptBar';
 import Divider from '@mui/material/Divider';
 import {WEBSOCKET_URL} from 'constants/chat';
 import {io} from 'socket.io-client';
+import { TextMessage } from 'types/chat/interfaces';
 
 const ChatRoom = () => {
-    const {status, setStatus} = useChatBotContext();
-    const {socket, setSocket} = useChatBotContext();
+    const {chatRoomDisplayStatus, setChatRoomDisplayStatus, chatMessages, setChatMessages, socket, setSocket} = useChatBotContext();
 
     useEffect(()=>{
-        const socket = io.connect(WEBSOCKET_URL);
-        socket.on('textMessageServerResponse', (message)=>{
-            console.log(message);  //TODO: add text/ voice messsage into the chatMessageDisplay later
+        const newSocket = io.connect(WEBSOCKET_URL, {extraHeaders: {'Authorization': `Bearer ${localStorage.getItem("accessToken")}`}});
+        newSocket.on('textMessageServerResponse', (message)=>{
+            console.log(message.textMessageServerResponse);  //TODO: add text/ voice messsage into the chatMessageDisplay later
+            const incomingChatMessage: TextMessage = {
+                messageID: Date.now().toString(),
+                messageStatus: 'received',
+                userID: 'bot',
+                datetime: new Date(),
+                fileFormat: 'text',
+                description: message.textMessageServerResponse,
+            }
+            setChatMessages((prevMessages)=>[...prevMessages, incomingChatMessage]); //need this so that it can get the most up-to-date chatMessages
         });
-        setSocket(socket);
+        setSocket(newSocket);
+
+        return () => {
+            setSocket((socket)=>{
+                socket.disconnect()
+                return null
+            })
+            console.log('Socket disconnected.');
+        };
+
     }, []); //TODO: testing websocket, close connection when demounted
 
     useEffect(()=>{
-        console.log("ChatRoom: ", !status?"invisible":"visible");
-    }, [status]);
+        console.log("ChatRoom: ", !chatRoomDisplayStatus?"invisible":"visible");
+    }, [chatRoomDisplayStatus]);
 
     return (
-        status&&
-        <Paper sx={{ minWidth:500, maxWidth:500, position: 'fixed', bottom: 10, right: 10}}>
+        chatRoomDisplayStatus&&
+        <Paper sx={{ minWidth:500, maxWidth:500, position: 'fixed', bottom: 10, right: 10, zIndex: 1100}}>
             <Stack direction="column">
                 <ChatRoomBar></ChatRoomBar>
                 <Divider/>
