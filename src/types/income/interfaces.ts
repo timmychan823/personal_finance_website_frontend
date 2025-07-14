@@ -1,32 +1,35 @@
-type IncomeCategory = "Dividend" | "Capital Gain" | "Interest" | "Earned Income" | "Insurance Claim";
+type IncomeCategory =
+  | "Dividend"
+  | "Capital Gain"
+  | "Interest"
+  | "Earned Income"
+  | "Insurance Claim";
 
 export interface Income {
-    monetaryValue: number;
-    currency: string;
-    incomeCategory: IncomeCategory;
-    datetime: Date;
-    description: string;
+  monetaryValue: number;
+  currency: string;
+  incomeCategory: IncomeCategory;
+  datetime: Date;
+  description: string;
 }
 
 export interface Dividend extends Income {
-    stockID: number;
+  stockID: number;
 }
 
 export interface CapitalGain extends Income {
-    assetID: number;
+  assetID: number;
 }
 
 export interface Interest extends Income {
-    fixedIncomeID: number;
+  fixedIncomeID: number;
 }
 
 export interface EarnedIncome extends Income {
-    companyName: string;
-    post: string;
+  companyName: string;
+  post: string;
 }
 
 export interface InsuranceClaim extends Income {
-    expenditureID: number;
+  expenditureID: number;
 }
-
-

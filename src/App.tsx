@@ -1,8 +1,8 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { RouterProvider } from 'react-router-dom'
-import router from 'router'
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { RouterProvider } from "react-router-dom";
+import router from "router";
 
 // import Keycloak from 'keycloak-js';
 
@@ -42,13 +42,8 @@ import router from 'router'
 //   console.log("auth failed")
 // })
 
-
-
 function App() {
-  return (
-    <RouterProvider router={router}/>
-  );
-  
+  return <RouterProvider router={router} />;
 }
 
 export default App;
