@@ -1,5 +1,5 @@
 type FileFormat = "text"|"voice"
-type MessageStatus = "sent"|"sending"
+type MessageStatus = "sent"|"sending"|"received"
 
 export interface ChatMessage {
     messageID: string,

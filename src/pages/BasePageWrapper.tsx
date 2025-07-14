@@ -1,10 +1,15 @@
+import AlertContext, { useAlertContextState } from 'contexts/alert'
 import { Outlet } from 'react-router-dom'
+import AlertNotification from 'components/global/AlertNotification'
 
 const BasePageWrapper = () => {
+    const alertState = useAlertContextState();
+    
     return (
-        <div>
+        <AlertContext.Provider value={alertState}>
+            <AlertNotification/>
             <Outlet/>
-        </div>
+        </AlertContext.Provider>
     )
 }
 

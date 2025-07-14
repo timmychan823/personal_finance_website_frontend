@@ -1,5 +1,6 @@
 //wrap the page with AppBar and NavMenu
 import { Outlet } from 'react-router-dom'
+import Box from '@mui/material/Box';
 import ResponsiveAppBar from 'components/global/ResponsiveAppBar'
 import { UserProfile } from 'types/userProfile/interfaces'
 import ChatBotContext, { useChatBotContextState } from 'contexts/chatBot'
@@ -19,9 +20,11 @@ const AuthorizedPageWrapper = () => {
     return (
         <ChatBotContext.Provider value={chatBotState}>   
             <ResponsiveAppBar pages={pages} settings={settings} currentUserProfile={currentUserProfile}/>
-            <ChatRoom/>
-            <ChatButton/>
-            <Outlet />
+            <Box sx={{margin: "0px 8px"}}>
+                <ChatRoom/>
+                <ChatButton/>
+                <Outlet />
+            </Box>
         </ChatBotContext.Provider>         
     )
 }

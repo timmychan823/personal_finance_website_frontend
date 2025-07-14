@@ -18,6 +18,10 @@ export default function ChatMessageDisplay(){
         username: "Timmy Chan",
         userImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
     }
+    const botProfile: UserProfile = {
+        username: "Bot",
+        userImage: "https://www.shutterstock.com/image-vector/chat-bot-icon-virtual-smart-600nw-2478937553.jpg"
+    }
 
     useEffect(()=>{
         console.log(chatMessages)
@@ -35,12 +39,12 @@ export default function ChatMessageDisplay(){
                         return(
                             <ListItem key={chatMessage.messageID} ref={isLastItem? lastItemRef : null} alignItems="flex-start">
                                 <ListItemAvatar>
-                                    <Avatar alt={currentUserProfile.username} src={currentUserProfile.userImage} />
+                                    <Avatar alt={chatMessage.userID==="bot"?botProfile.username:currentUserProfile.username} src={chatMessage.userID==="bot"?botProfile.userImage:currentUserProfile.userImage} />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={currentUserProfile.username}
+                                    primary={chatMessage.userID==="bot"?botProfile.username:currentUserProfile.username}
                                     secondary={textMessage.description}
-                                    style={{ maxWidth: "fit-content", wordBreak: "break-all" }}
+                                    style={{ maxWidth: "fit-content", wordBreak: "break-word", whiteSpace: "pre-line"}}
                                 />
                             </ListItem>
                         )

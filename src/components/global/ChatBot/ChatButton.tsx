@@ -5,20 +5,20 @@ import { useChatBotContext } from 'contexts/chatBot';
 
 const ChatButton = () => {
     // useContext
-    const { status, setStatus } = useChatBotContext();
+    const { chatRoomDisplayStatus, setChatRoomDisplayStatus } = useChatBotContext();
     const openChatRoom = () => {
-        setStatus(status=>!status);
+        setChatRoomDisplayStatus(chatRoomDisplayStatus=>!chatRoomDisplayStatus);
     }
 
     useEffect(()=>{
-        console.log("ChatButton: ", status?"invisible":"visible");
-    }, [status])
+        console.log("ChatButton: ", chatRoomDisplayStatus?"invisible":"visible");
+    }, [chatRoomDisplayStatus])
 
     return (
-        !status&&<IconButton             
+        !chatRoomDisplayStatus&&<IconButton             
             size="large"
             aria-label="chatButton"
-            sx={{ position: 'fixed', bottom: 10, right: 10}}
+            sx={{ position: 'fixed', bottom: 10, right: 10, zIndex: 1100}}
             onClick={openChatRoom} //TODO: toggle the chatroom using the ChatBotContext
             color="primary">
             <SmartToyIcon/>

@@ -10,9 +10,11 @@ import SendIcon from '@mui/icons-material/Send';
 import Keycloak from 'keycloak-js';
 import {authenticate, refreshToken, logout} from "services/AuthService/authService"
 import {useNavigate} from 'react-router-dom'
+import { useAlertContext } from 'contexts/alert';
 
 export default function LoginForm() {
     const navigate = useNavigate();
+    const {setSeverity, setAlertMessage} = useAlertContext();
 
     const [formData, setFormData] = useState({
         username: '',
@@ -29,9 +31,10 @@ export default function LoginForm() {
         // Handle form submission logic
         try{
             await authenticate(formData.username, formData.password);
-            navigate("/")
-        }catch{
-            //pass
+            navigate("/");
+        }catch (error: unknown){
+            setSeverity("error");
+            setAlertMessage(error.message);
         }
     };
 
