@@ -1,14 +1,12 @@
-import { useEffect } from "react";
 import { useChatBotContext } from "contexts/chatBot";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Stack from "@mui/material/Stack";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { UserProfile } from "types/userProfile/interfaces";
 import Avatar from "@mui/material/Avatar";
 
 const ChatRoomBar = () => {
-  const { chatRoomDisplayStatus, setChatRoomDisplayStatus } =
+  const { setChatRoomDisplayStatus } =
     useChatBotContext();
   const closeChatRoom = () => {
     setChatRoomDisplayStatus((chatRoomDisplayStatus) => !chatRoomDisplayStatus);

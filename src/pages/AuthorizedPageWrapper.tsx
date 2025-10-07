@@ -10,7 +10,7 @@ import ChatRoom from "components/global/ChatBot/ChatRoom/ChatRoom";
 const AuthorizedPageWrapper = () => {
   const chatBotState = useChatBotContextState();
 
-  const pages = ["news", "financing", "investing"];
+  const pages = ["financing", "investing"];
   const settings = ["profile", "logout"];
   const currentUserProfile: UserProfile = {
     username: "Timmy Chan",

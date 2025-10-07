@@ -1,7 +1,6 @@
-import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import LandingPage from "pages/LandingPage";
-import NewsPage from "pages/NewsPage";
 import FinancingPage from "pages/FinancingPage";
 import InvestingPage from "pages/InvestingPage";
 import ErrorPage from "pages/ErrorPage";
@@ -9,6 +8,7 @@ import LoginPage from "pages/login/LoginPage";
 import NotFound from "pages/NotFound";
 import BasePageWrapper from "pages/BasePageWrapper";
 import AuthorizedPageWrapper from "pages/AuthorizedPageWrapper";
+import StockDetailsPage from "pages/StockDetailsPage";
 
 export const router = createBrowserRouter(
   [
@@ -29,16 +29,21 @@ export const router = createBrowserRouter(
               element: <LandingPage />,
             },
             {
-              path: "news",
-              element: <NewsPage />,
-            },
-            {
               path: "financing",
               element: <FinancingPage />,
             },
             {
               path: "investing",
-              element: <InvestingPage />,
+              children: [
+                {
+                  index: true,
+                  element: <InvestingPage />,
+                },
+                {
+                  path: ":ticker",
+                  element: <StockDetailsPage />, //TODO: Investigate why this won't switch page
+                },
+              ]
             },
           ],
         },

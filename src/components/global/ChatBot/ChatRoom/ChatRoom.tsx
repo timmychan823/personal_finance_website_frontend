@@ -13,10 +13,7 @@ import { TextMessage } from "types/chat/interfaces";
 const ChatRoom = () => {
   const {
     chatRoomDisplayStatus,
-    setChatRoomDisplayStatus,
-    chatMessages,
     setChatMessages,
-    socket,
     setSocket,
   } = useChatBotContext();
 

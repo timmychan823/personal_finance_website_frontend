@@ -1,4 +1,4 @@
-import axios from "providers/axiosInstance";
+// import axios from "providers/axiosInstance";
 import { io } from "socket.io-client";
 
 export async function sendTextMessage(socket: io, textMessage: string) {

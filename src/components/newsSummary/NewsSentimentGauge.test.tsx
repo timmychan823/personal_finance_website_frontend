@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { News } from "types/newsSummary/interfaces";
 
 import NewsSentimentGauge from "./NewsSentimentGauge";
 

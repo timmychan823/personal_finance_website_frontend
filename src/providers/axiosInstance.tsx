@@ -1,6 +1,5 @@
-import { FC, useLayoutEffect, useRef } from "react";
-import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
-import { authenticate, refreshToken } from "services/AuthService/authService";
+import axios from "axios";
+import { refreshToken } from "services/AuthService/authService";
 import { isTokenExpired } from "helpers/authUtils";
 import router from "router";
 

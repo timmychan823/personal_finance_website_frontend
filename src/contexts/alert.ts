@@ -1,26 +1,77 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, Reducer, Dispatch, useReducer } from "react";
 import { EMPTY_VOID } from "types";
 import { Severity } from "types/alert/interfaces";
 
+type ActionText = 'setSuccess' | 'setInfo' | 'setWarning' | 'setError' | 'setNull'
+
+interface State {
+  severity?: Severity
+  message?: string
+}
+
+interface Action {
+  type: ActionText
+  message: string
+}
+
+const reducer: Reducer<State, Action> = (state, action) => {
+  switch (action.type) {
+    case 'setSuccess': {
+      return {
+        ...state,
+        severity: 'success',
+        message: action.message
+      }
+    }
+    case 'setInfo': {
+      return {
+        ...state,
+        severity: 'info',
+        message: action.message
+      }
+    }
+    case 'setWarning': {
+      return {
+        ...state,
+        severity: 'warning',
+        message: action.message
+      }
+    }
+    case 'setError': {
+      return {
+        ...state,
+        severity: 'error',
+        message: action.message
+      }
+    }
+    case 'setNull': {
+      return {
+        ...state,
+        severity: null,
+        message: null
+      }
+    }
+  }
+}
+
 export interface IAlertContext {
   severity: Severity | null;
-  alertMessage: string | null;
-  setSeverity: (newSeverity: Severity) => void;
-  setAlertMessage: (newAlertMessage: string) => void;
+  message: string | null;
+  alertDispatch: Dispatch<Action>;
 }
 
 export function useAlertContextState(): IAlertContext {
-  const [severity, setSeverity] = useState(null);
-  const [alertMessage, setAlertMessage] = useState(null);
-  return { severity, setSeverity, alertMessage, setAlertMessage };
+  const [{ severity, message }, dispatch] = useReducer(reducer, {
+    severity: null,
+    message: null
+  })
+  return { severity, message, alertDispatch: dispatch }
 }
 
 export const AlertContext = createContext<IAlertContext>({
-  // getter
   severity: null,
-  setSeverity: EMPTY_VOID as (newSeverity: Severity) => void,
-  alertMessage: null,
-  setAlertMessage: EMPTY_VOID as (newAlertMessage: string) => void,
+  message: null,
+  alertDispatch: EMPTY_VOID as unknown as Dispatch<Action>,
 });
 
 export const useAlertContext = () => useContext(AlertContext);

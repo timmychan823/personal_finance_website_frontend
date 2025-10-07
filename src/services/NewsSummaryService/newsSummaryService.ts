@@ -27,9 +27,11 @@ export async function getListOfNews(
     if (!response.ok) {
       // response.ok is true for 2xx status codes
       const errorBody = await response.json(); // Or response.text() depending on content type
+      console.debug(errorBody)
       throw new Error(
         `HTTP Error: ${response.status} - ${response.statusText || "Unknown error"}`,
       );
+
     }
     data = await response.json();
     listOfNews = [...listOfNews, ...data];
@@ -54,6 +56,7 @@ export async function getListOfUniqueCompanies(): Promise<string[]> {
     if (!response.ok) {
       // response.ok is true for 2xx status codes
       const errorBody = await response.json(); // Or response.text() depending on content type
+      console.debug(errorBody)
       throw new Error(
         `HTTP Error: ${response.status} - ${response.statusText || "Unknown error"}`,
       );

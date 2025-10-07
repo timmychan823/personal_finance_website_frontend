@@ -53,7 +53,7 @@ const ResponsiveAppBar: FC<PropsWithChildren<IProps>> = ({
 
   const chooseSetting = (setting: string) => {
     handleCloseUserMenu();
-    if (setting == "logout") {
+    if (setting === "logout") {
       logout(localStorage.getItem("refreshToken") ?? "");
       navigate("/login");
     } else {

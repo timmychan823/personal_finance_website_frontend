@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useChatBotContext } from "contexts/chatBot";
-import Paper from "@mui/material/Paper";
 import { ChatMessage, TextMessage } from "types/chat/interfaces";
-import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Avatar from "@mui/material/Avatar";
@@ -73,6 +71,8 @@ export default function ChatMessageDisplay() {
               />
             </ListItem>
           );
+        } else {
+          return (<></>) //TODO: allow voice message later
         }
       })}
     </List>

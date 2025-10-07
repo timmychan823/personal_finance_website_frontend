@@ -1,5 +1,4 @@
 import LoginForm from "components/login/LoginForm";
-import Grid from "@mui/material/Grid";
 
 const LoginPage = () => {
   return (

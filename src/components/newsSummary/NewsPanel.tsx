@@ -1,5 +1,4 @@
 import { News } from "types/newsSummary/interfaces";
-import { FC, PropsWithChildren, useState, MouseEvent } from "react";
 import LinkIcon from "@mui/icons-material/Link";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";

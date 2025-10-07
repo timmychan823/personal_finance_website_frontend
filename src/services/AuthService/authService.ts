@@ -22,6 +22,7 @@ export async function authenticate(username: string, password: string) {
     if (!response.ok) {
       // response.ok is true for 2xx status codes
       const errorBody = await response.json(); // Or response.text() depending on content type
+      console.debug(errorBody)
       throw new Error(
         `HTTP Error: ${response.status} - ${response.statusText || "Unknown error"}`,
       );
@@ -76,6 +77,9 @@ export async function logout(refresh_token: string) {
         refresh_token: refresh_token,
       }),
     });
+
+    console.debug(response)
+
     console.log("logout success");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken"); //TODO: CRUD on localStorage should not be done in service

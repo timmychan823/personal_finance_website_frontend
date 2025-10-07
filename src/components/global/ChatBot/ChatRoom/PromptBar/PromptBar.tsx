@@ -71,6 +71,7 @@ export default function PromptBar() {
       <IconButton
         aria-label="sendChatMessageButton"
         size="small"
+        disabled={textMessageToBeSent.trim() === ""}
         onClick={() => handleSendTextMessage(textMessageToBeSent)}
         style={{ margin: "0px 10px" }}
       >
