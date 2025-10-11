@@ -4,7 +4,7 @@ import Link from "@mui/material/Link";
 import CircularProgress from '@mui/material/CircularProgress';
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import { getListOfDataReleases } from 'services/NewsSummaryService/dataReleasesService'
+import { getListOfDataReleases } from 'services/InvestingService/dataReleasesService'
 import { useAlertContext } from 'contexts/alert';
 
 export default function DataReleasesPanel() {
@@ -19,7 +19,7 @@ export default function DataReleasesPanel() {
                 console.log(data)
                 setListOfDataReleases(data);
                 setIsLoading(false);
-            } catch (error: unknown) {
+            } catch (error: any) {
                 alertDispatch({ type: 'setError', message: error.message });
             }
         }
@@ -49,10 +49,10 @@ export default function DataReleasesPanel() {
                             } else {
                                 return (
                                     <Stack sx={{ flex: 1, display: "flex" }} direction="column">
-                                        {listOfDataReleases.map((source) => (
+                                        {listOfDataReleases.map((source: any) => (
                                             <>
-                                                <Link target="_blank" href={source['releases'][0].source_link}><h3>{source.source_name}</h3></Link>
-                                                {source.releases.map((release) => (<Link target="_blank" href={release.release_link}><p>{release.release_name_x}</p></Link>))}
+                                                <Link target="_blank" href={source['releases'][0]["source_link"]}><h3>{source["source_name"]}</h3></Link>
+                                                {source.releases.map((release: any) => (<Link target="_blank" href={release.release_link}><p>{release.release_name_x}</p></Link>))}
                                             </>
                                         ))}
                                     </Stack>

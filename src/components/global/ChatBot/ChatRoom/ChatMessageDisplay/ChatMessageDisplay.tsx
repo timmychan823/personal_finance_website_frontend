@@ -10,7 +10,7 @@ import { UserProfile } from "types/userProfile/interfaces";
 
 export default function ChatMessageDisplay() {
   const { chatMessages } = useChatBotContext();
-  const lastItemRef = useRef(null);
+  const lastItemRef = useRef<null | HTMLLIElement>(null);
 
   const currentUserProfile: UserProfile = {
     username: "Timmy Chan",

@@ -2,10 +2,9 @@ import * as NEWS_CONSTANTS from "constants/newsSummary";
 import { News } from "types/newsSummary/interfaces";
 
 export async function getListOfNews(
-  listOfTickers: string[] | null = null,
-  limit: number = 10,
+  listOfTickers: string[],
+  limit: number = 10, //TODO: add page number and remove limit, only add pageSize on server side
 ): Promise<News[]> {
-  //TODO: should return a saveIncomeResponse???
   let response;
   let data;
   let listOfNews: News[] = [];
@@ -44,7 +43,6 @@ export async function getListOfNews(
 }
 
 export async function getListOfUniqueCompanies(): Promise<string[]> {
-  //TODO: should return a saveIncomeResponse???
   let response;
   let data;
   let listOfUniqueCompanies: string[] = [];

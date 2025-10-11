@@ -1,4 +1,5 @@
-import axios from "axios";
+import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, axios } from "axios";
+
 import { refreshToken } from "services/AuthService/authService";
 import { isTokenExpired } from "helpers/authUtils";
 import router from "router";
@@ -7,7 +8,7 @@ const axiosInstance = axios.create();
 
 //TODO: intercept on request and add Authorization header to it, if not exist or expire then go to login page, for response, if backend said token expired, then go to login page
 axiosInstance.interceptors.request.use(
-  async (config) => {
+  async (config: AxiosRequestConfig) => {
     let accessToken: string = localStorage.getItem("accessToken") ?? "";
     const refresh_token: string = localStorage.getItem("refreshToken") ?? "";
 
@@ -25,7 +26,7 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   },
 );
