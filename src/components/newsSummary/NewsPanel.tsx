@@ -25,7 +25,7 @@ const NewsPanel = (props: IProps) => {
                 <LinkIcon />
               </Link>
             </Stack>
-            <p>{news.newsDescription}</p>
+            <h6 style={{ color: "gray" }}>{news.newsPublishTime}</h6>
           </Stack>
           <NewsSentimentGauge newsSentiment={news.newsSentiment} />
         </Stack>

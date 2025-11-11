@@ -39,7 +39,8 @@ const InvestingPage = () => {
       (companySearchResultPageList.companyList !== null && companySearchResultPageList.companyList.length !== 0) ? setListOfCompanies(companySearchResultPageList.companyList) : setListOfCompanies([]);
       companySearchResultPageList.totalPages !== null ? setTotalPages(companySearchResultPageList.totalPages) : setTotalPages(1);
       companySearchResultPageList.pageNumber !== null ? setPageNumber(companySearchResultPageList.pageNumber) : setPageNumber(1);
-
+      console.log(filter);
+      console.log(searchQuery)
     } catch (error: any) {
       alertDispatch({ type: 'setError', message: error.message })
     }
@@ -62,9 +63,39 @@ const InvestingPage = () => {
     // console.log("page changed to " + pageNumber);
     await submitListOfCompaniesRequest(1);
   }
+  function handleCountryChipClick(event: any) {
+    const countryString = event.target.innerText;
+    setFilter((prevFilter: any) => {
+      let newCountryFilter = [...prevFilter.countryFilter];
+      if (newCountryFilter.includes(countryString)) {
+        newCountryFilter = newCountryFilter.filter((country) => country !== countryString);
+      } else {
+        newCountryFilter.push(countryString);
+      }
+      return { ...prevFilter, countryFilter: newCountryFilter };
+    });
+    console.log(filter.countryFilter);
+  }
+
+  function handleSectorChipClick(event: any) {
+    const sectorString = event.target.innerText;
+    setFilter((prevFilter: any) => {
+      let newSectorFilter = [...prevFilter.sectorFilter];
+      if (newSectorFilter.includes(sectorString)) {
+        newSectorFilter = newSectorFilter.filter((sector) => sector !== sectorString);
+      } else {
+        newSectorFilter.push(sectorString);
+      }
+      return { ...prevFilter, sectorFilter: newSectorFilter };
+    });
+    console.log(filter.sectorFilter);
+  }
+
 
   return (
     <Fragment>
+      <Typography variant="h3" display="block">Portfolio</Typography>
+      {/* <InvestmentDataPredictionChart actualData={stockPriceActualData} predictedData={stockPricePredictedData} /> //TODO: retrieve info from Interactive Broker Account Provided and show portfolio actual value and portfolio expected value in the future*/}
       <Typography variant="h3" display="block">Companies</Typography>
       <TextField
         label="Search for Companies By Ticker"
@@ -91,7 +122,8 @@ const InvestingPage = () => {
                 <Chip
                   key={countryString}
                   label={countryString}
-                  sx={{ margin: 1, backgroundColor: "LightSalmon" }}
+                  sx={{ margin: 1, backgroundColor: filter.countryFilter.includes(countryString) ? "LightSalmon" : "LightGray" }}
+                  onClick={handleCountryChipClick}
                 />
               ))}
             </div>
@@ -102,7 +134,8 @@ const InvestingPage = () => {
                 <Chip
                   key={sectorString}
                   label={sectorString}
-                  sx={{ margin: 1, backgroundColor: "LightSkyBlue" }}
+                  sx={{ margin: 1, backgroundColor: filter.sectorFilter.includes(sectorString) ? "LightSkyBlue" : "LightGray" }}
+                  onClick={handleSectorChipClick}
                 />
               ))}
             </div>

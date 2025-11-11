@@ -1,13 +1,14 @@
 import * as NEWS_CONSTANTS from "constants/newsSummary";
 import { News } from "types/newsSummary/interfaces";
+import { NewsSummaryResponse } from "types/newsSummary/interfaces";
 
 export async function getListOfNews(
   listOfTickers: string[],
-  limit: number = 10, //TODO: add page number and remove limit, only add pageSize on server side
-): Promise<News[]> {
+  limit: number = 10,
+  pageNumber: number = 1,
+): Promise<NewsSummaryResponse> {
   let response;
   let data;
-  let listOfNews: News[] = [];
 
   const params = new URLSearchParams();
 
@@ -16,6 +17,7 @@ export async function getListOfNews(
   });
 
   params.append("limit", limit.toString());
+  params.append("pageNumber", pageNumber.toString());
   try {
     response = await fetch(
       `${NEWS_CONSTANTS.LIST_OF_NEWS_URL}?${params.toString()}`,
@@ -33,8 +35,16 @@ export async function getListOfNews(
 
     }
     data = await response.json();
-    listOfNews = [...listOfNews, ...data];
-    return listOfNews;
+    let listOfNewsFromResponse: News[] = data['listOfNews'];
+    let numberOfNewsFromResponse: number = data['numberOfNews'];
+    console.log(data)
+    console.log(listOfNewsFromResponse);
+    console.log(numberOfNewsFromResponse);
+    let newsSummaryResponse: NewsSummaryResponse = {
+      listOfNews: listOfNewsFromResponse,
+      numberOfNews: numberOfNewsFromResponse
+    }
+    return newsSummaryResponse;
   } catch (error: unknown) {
     //pass
     console.error("newsSummaryService getListOfNews error"); //TODO: dispatch an error, showing a invalid pop up or something like that

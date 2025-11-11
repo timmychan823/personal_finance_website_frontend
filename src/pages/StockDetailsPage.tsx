@@ -17,15 +17,17 @@ import InvestmentDataPredictionChart from "components/investmentDataPrediction/i
 import { getStockPriceData } from "services/InvestingService/stockPriceDataService";
 import { timeSeriesDatum } from "types/investingPrediction/interfaces";
 import { News } from "types/newsSummary/interfaces";
+import { NewsSummaryResponse } from "types/newsSummary/interfaces";
 
 const StockDetailsPage = () => {
-    const { tickerString } = useParams();
-    const ticker: string = tickerString!;
+    const { ticker } = useParams();
     const [sentiment, setSentiment] = useState(null); //TODO: put in NewsContext
     const [listOfNews, setListOfNews] = useState<Array<News>>([]); //TODO: put in NewsContext
     const [stockPriceActualData, setStockPriceActualData] = useState<Array<timeSeriesDatum>>([]);
     const [stockPricePredictedData, setStockPricePredictedData] = useState<Array<timeSeriesDatum>>([]);
     const [limit, setLimit] = useState(10); //TODO: remove limit (add it on server side), should add page number and page size
+    const [pageNumber, setPageNumber] = useState(1);
+    const [totalNumberOfPages, setTotalNumberOfPages] = useState(0);
     const { alertDispatch } = useAlertContext();
     // const defaultTimeSeriesData: LineChartData = {
     //     x: [new Date(2025, 6, 7), new Date(2025, 6, 8), new Date(2025, 6, 9), new Date(2025, 6, 10), new Date(2025, 6, 11), new Date(2025, 6, 12), new Date(2025, 6, 13)],
@@ -34,12 +36,22 @@ const StockDetailsPage = () => {
     // const [timeSeriesData, setTimeSeriesData] = useState(defaultTimeSeriesData)
     async function handleNewsUpdate() {
         try {
-            setListOfNews(await getListOfNews([ticker], limit)); //TODO: should add current page number, startTime, endTime
+            let newsSummaryResponse: NewsSummaryResponse = await getListOfNews([ticker], limit, pageNumber); //TODO: should add current page number, startTime, endTime
+            setTotalNumberOfPages(Math.ceil(newsSummaryResponse.numberOfNews / limit));
+            console.log("totalNumberOfPages: " + totalNumberOfPages);
+            console.log(newsSummaryResponse.listOfNews)
+            setListOfNews(newsSummaryResponse.listOfNews);
         } catch (error: any) {
             alertDispatch({ type: 'setError', message: error.message })
         }
 
     }
+
+    // Function to handle page changes
+    const handlePageChange = (event: Event, newPageNumber: number) => {
+        setPageNumber(newPageNumber);
+    };
+
     async function handleStockPriceUpdate() {
         try {
             setStockPriceActualData(await getStockPriceData(ticker, "daily", "actual"));
@@ -49,8 +61,12 @@ const StockDetailsPage = () => {
             alertDispatch({ type: 'setError', message: error.message })
         }
     }
+
     useEffect(() => {
         handleNewsUpdate();
+    }, [pageNumber])
+
+    useEffect(() => {
         handleStockPriceUpdate();
     }, [])
 
@@ -70,9 +86,9 @@ const StockDetailsPage = () => {
                     <Stack direction="column" spacing={2} sx={{ margin: 3 }}>
                         <NewsPanel listOfNews={listOfNews} />
                     </Stack>
-                    <Stack direction="row" style={{ flex: 1, justifyContent: "center" }}>
-                        <Pagination count={10} color="primary" />
-                    </Stack>
+                    {totalNumberOfPages !== 0 && <Stack direction="row" style={{ flex: 1, justifyContent: "center" }}>
+                        <Pagination count={totalNumberOfPages} page={pageNumber} onChange={handlePageChange} color="primary" showFirstButton showLastButton />
+                    </Stack>}
                 </Stack>
             </Stack>
         </Fragment>
