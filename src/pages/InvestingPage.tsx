@@ -7,45 +7,52 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
+import Autocomplete from '@mui/material/Autocomplete';
 import {
   getListOfNews,
   getListOfUniqueCompanies,
 } from "services/InvestingService/newsSummaryService";
-import { getListOfCompaniesBasedOnQueryAndFilter } from "services/InvestingService/companySearchService";
+import { getListOfCompaniesBasedOnQueryAndFilter, getSectorsAndSubIndustries } from "services/InvestingService/companySearchService";
 import { useAlertContext } from "contexts/alert";
 import CompanySearchResultPaper from "components/companySearch/companySearchResultPaper";
 import TextField from "@mui/material/TextField";
 import { CompanySearchResult } from "types/searchResult/interfaces";
 import { flushSync } from "react-dom";
+import CompanySearchSubIndustriesFilter from "components/companySearch/companySearchSubIndustriesFilter";
 
 const InvestingPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const defaultCountries = ["China", "US", "Europe"];
-  const defaultSectors = [
-    "Information Technology", "Health Care", "Financials", "Consumer Discretionary",
-    "Communication Services", "Industrials", "Consumer Staples", "Energy",
-    "Utilities", "Real Estate", "Materials"
-  ];
-  const [filter, setFilter] = useState({ countryFilter: defaultCountries, sectorFilter: defaultSectors });
+  const [subIndustriesFilter, setSubIndustriesFilter] = useState<string[]>([]);
   const [listOfCompanies, setListOfCompanies] = useState<CompanySearchResult[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [subIndustries, setSubIndustries] = useState<{ sector: string, subIndustries: string[] }[]>([]);
 
   const { alertDispatch } = useAlertContext();
 
+  async function findAllSectorsAndSubIndustries() {
+    try {
+      let data = await getSectorsAndSubIndustries(); //TODO: why no data returned here
+      setSubIndustries(data); //TODO: why no subIndustries set here
+    } catch (error: any) {
+      alertDispatch({ type: 'setError', message: error.message })
+    }
+  }
+
   async function submitListOfCompaniesRequest(pageNo: number) {
     try {
-      const companySearchResultPageList = await getListOfCompaniesBasedOnQueryAndFilter(filter, searchQuery, pageNo);
+      const companySearchResultPageList = await getListOfCompaniesBasedOnQueryAndFilter(subIndustriesFilter, searchQuery, pageNo);
       (companySearchResultPageList.companyList !== null && companySearchResultPageList.companyList.length !== 0) ? setListOfCompanies(companySearchResultPageList.companyList) : setListOfCompanies([]);
       companySearchResultPageList.totalPages !== null ? setTotalPages(companySearchResultPageList.totalPages) : setTotalPages(1);
       companySearchResultPageList.pageNumber !== null ? setPageNumber(companySearchResultPageList.pageNumber) : setPageNumber(1);
-      console.log(filter);
+      console.log(subIndustriesFilter);
       console.log(searchQuery)
     } catch (error: any) {
       alertDispatch({ type: 'setError', message: error.message })
     }
 
   }
+
 
   async function handlePageChange(event: any, value: number) {
     // console.log("value is " + value);
@@ -63,33 +70,18 @@ const InvestingPage = () => {
     // console.log("page changed to " + pageNumber);
     await submitListOfCompaniesRequest(1);
   }
-  function handleCountryChipClick(event: any) {
-    const countryString = event.target.innerText;
-    setFilter((prevFilter: any) => {
-      let newCountryFilter = [...prevFilter.countryFilter];
-      if (newCountryFilter.includes(countryString)) {
-        newCountryFilter = newCountryFilter.filter((country) => country !== countryString);
-      } else {
-        newCountryFilter.push(countryString);
-      }
-      return { ...prevFilter, countryFilter: newCountryFilter };
+
+  function handleChangeOfSelectedSubIndustries(event: any, values: { sector: string, subIndustry: string }[]) {
+    let newSubIndustries: string[] = [];
+    values.forEach((value) => { newSubIndustries.push(value.subIndustry); });
+    setSubIndustriesFilter((prevSubIndustriesFilter: any) => {
+      return { ...prevSubIndustriesFilter, newSubIndustries };
     });
-    console.log(filter.countryFilter);
   }
 
-  function handleSectorChipClick(event: any) {
-    const sectorString = event.target.innerText;
-    setFilter((prevFilter: any) => {
-      let newSectorFilter = [...prevFilter.sectorFilter];
-      if (newSectorFilter.includes(sectorString)) {
-        newSectorFilter = newSectorFilter.filter((sector) => sector !== sectorString);
-      } else {
-        newSectorFilter.push(sectorString);
-      }
-      return { ...prevFilter, sectorFilter: newSectorFilter };
-    });
-    console.log(filter.sectorFilter);
-  }
+  useEffect(() => {
+    findAllSectorsAndSubIndustries();
+  }, []);
 
 
   return (
@@ -97,50 +89,20 @@ const InvestingPage = () => {
       <Typography variant="h3" display="block">Portfolio</Typography>
       {/* <InvestmentDataPredictionChart actualData={stockPriceActualData} predictedData={stockPricePredictedData} /> //TODO: retrieve info from Interactive Broker Account Provided and show portfolio actual value and portfolio expected value in the future*/}
       <Typography variant="h3" display="block">Companies</Typography>
-      <TextField
-        label="Search for Companies By Ticker"
-        variant="outlined"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value.trim())}
-        sx={{ marginBottom: 2, minWidth: 400 }}
-      />
       <Stack direction="column">
-        <Accordion sx={{ minWidth: 400, zIndex: 1060, margin: "8px 0px" }}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-            sx={{ backgroundColor: "PapayaWhip" }}
-          >
-            <h2>Categories Filter</h2>
-          </AccordionSummary>
-          <Divider />
-          <AccordionDetails sx={{ backgroundColor: "Ivory" }}>
-            <div>
-              <h3>Countries</h3>
-              {defaultCountries.map((countryString: string) => (
-                <Chip
-                  key={countryString}
-                  label={countryString}
-                  sx={{ margin: 1, backgroundColor: filter.countryFilter.includes(countryString) ? "LightSalmon" : "LightGray" }}
-                  onClick={handleCountryChipClick}
-                />
-              ))}
-            </div>
-            <Divider />
-            <div>
-              <h3>Sectors</h3>
-              {defaultSectors.map((sectorString: string) => (
-                <Chip
-                  key={sectorString}
-                  label={sectorString}
-                  sx={{ margin: 1, backgroundColor: filter.sectorFilter.includes(sectorString) ? "LightSkyBlue" : "LightGray" }}
-                  onClick={handleSectorChipClick}
-                />
-              ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
+        <TextField
+          label="Search for Companies By Ticker"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value.trim())}
+          sx={{ marginBottom: 2, minWidth: 400 }}
+        />
+        <CompanySearchSubIndustriesFilter
+          list={subIndustries}
+          checkedSubIndustries={subIndustriesFilter}
+          setCheckedSubIndustries={setSubIndustriesFilter}>
+        </CompanySearchSubIndustriesFilter> //TODO: check why CompanySearchSubIndustriesFilter not shown
+
         <Stack direction="row" style={{ flex: 1, justifyContent: "end" }}>
           <Button
             component="label"

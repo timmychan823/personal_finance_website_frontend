@@ -24,7 +24,7 @@ const ChatButton = () => {
         size="large"
         aria-label="chatButton"
         sx={{ position: "fixed", bottom: 10, right: 10, zIndex: 1100 }}
-        onClick={openChatRoom} //TODO: toggle the chatroom using the ChatBotContext
+        onClick={openChatRoom}
         color="primary"
       >
         <SmartToyIcon />

@@ -24,7 +24,7 @@ const ChatRoom = () => {
       },
     });
     newSocket.on("textMessageServerResponse", (message) => {
-      console.log(message.textMessageServerResponse); //TODO: add text/ voice messsage into the chatMessageDisplay later
+      console.log(message.textMessageServerResponse);
       const incomingChatMessage: TextMessage = {
         messageID: Date.now().toString(),
         messageStatus: "received",

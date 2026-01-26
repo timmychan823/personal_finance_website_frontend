@@ -32,6 +32,15 @@ export async function getStockPriceData(
         // }
         // data = await response.json();
 
+        // await axiosInstance.get(NEWS_CONSTANTS.LIST_OF_DATA_RELEASES)
+        //     .then(response => {
+        //         data = response.data;
+        //     }).catch(error => {
+        //         throw new Error(
+        //             `HTTP Error: ${response.status} - ${response.statusText || "Unknown error"}`,
+        //         );
+        //     })
+
         //TODO: remove this later after the implemenation on backend, just for testing purpose
         if (type == "actual") {
             data =

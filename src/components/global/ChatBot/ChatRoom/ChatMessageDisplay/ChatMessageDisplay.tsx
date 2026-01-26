@@ -72,7 +72,7 @@ export default function ChatMessageDisplay() {
             </ListItem>
           );
         } else {
-          return (<></>) //TODO: allow voice message later
+          return (<></>)
         }
       })}
     </List>

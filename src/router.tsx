@@ -41,7 +41,7 @@ export const router = createBrowserRouter(
                 },
                 {
                   path: ":ticker",
-                  element: <StockDetailsPage />, //TODO: Investigate why this won't switch page
+                  element: <StockDetailsPage />,
                 },
               ]
             },

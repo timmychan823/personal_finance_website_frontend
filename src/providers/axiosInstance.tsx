@@ -1,4 +1,4 @@
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, axios } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 import { refreshToken } from "services/AuthService/authService";
 import { isTokenExpired } from "helpers/authUtils";
@@ -6,7 +6,6 @@ import router from "router";
 
 const axiosInstance = axios.create();
 
-//TODO: intercept on request and add Authorization header to it, if not exist or expire then go to login page, for response, if backend said token expired, then go to login page
 axiosInstance.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
     let accessToken: string = localStorage.getItem("accessToken") ?? "";
@@ -14,15 +13,18 @@ axiosInstance.interceptors.request.use(
 
     if (isTokenExpired(refresh_token)) {
       router.navigate("/login");
-      //TODO: cancel request
     }
 
     if (isTokenExpired(accessToken) && !isTokenExpired(refresh_token)) {
       await refreshToken(refresh_token);
-      //TODO: continue with the new accessToken
+      console.log(`Token refreshed: ${accessToken}`);
     }
     accessToken = localStorage.getItem("accessToken") ?? "";
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
+    console.log(`Using access token: ${accessToken}`);
+    config.headers = config.headers ?? {};
+    config.headers.Authorization = `Bearer ${accessToken}`;
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
 
     return config;
   },
@@ -31,4 +33,4 @@ axiosInstance.interceptors.request.use(
   },
 );
 
-export default axiosInstance;
+export { axiosInstance };
