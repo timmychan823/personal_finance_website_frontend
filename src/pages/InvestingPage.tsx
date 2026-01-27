@@ -12,7 +12,7 @@ import {
   getListOfNews,
   getListOfUniqueCompanies,
 } from "services/InvestingService/newsSummaryService";
-import { getListOfCompaniesBasedOnQueryAndFilter, getSectorsAndSubIndustries } from "services/InvestingService/companySearchService";
+import { getSectorsAndSubIndustries, searchCompaniesBySubIndustriesAndQuery } from "services/InvestingService/companySearchService";
 import { useAlertContext } from "contexts/alert";
 import CompanySearchResultPaper from "components/companySearch/companySearchResultPaper";
 import TextField from "@mui/material/TextField";
@@ -41,33 +41,54 @@ const InvestingPage = () => {
 
   async function submitListOfCompaniesRequest(pageNo: number) {
     try {
-      const companySearchResultPageList = await getListOfCompaniesBasedOnQueryAndFilter(subIndustriesFilter, searchQuery, pageNo);
-      (companySearchResultPageList.companyList !== null && companySearchResultPageList.companyList.length !== 0) ? setListOfCompanies(companySearchResultPageList.companyList) : setListOfCompanies([]);
-      companySearchResultPageList.totalPages !== null ? setTotalPages(companySearchResultPageList.totalPages) : setTotalPages(1);
-      companySearchResultPageList.pageNumber !== null ? setPageNumber(companySearchResultPageList.pageNumber) : setPageNumber(1);
-      console.log(subIndustriesFilter);
-      console.log(searchQuery)
+      const limit = 10;
+      const response = await searchCompaniesBySubIndustriesAndQuery(
+        subIndustriesFilter,
+        searchQuery,
+        pageNo,
+        limit
+      );
+
+      // Map companies from response
+      let mappedCompanies: any[] = [];
+      if (response.list_of_companies && response.list_of_companies.length > 0) {
+        mappedCompanies = response.list_of_companies.map((company: any) => ({
+          ticker: company.ticker,
+          companyName: company.companyName,
+          description: company.subIndustry,
+          link: `/investing/${company.ticker}`
+        }));
+        setListOfCompanies(mappedCompanies);
+      } else {
+        setListOfCompanies([]);
+      }
+
+      // Calculate total pages based on numberOfCompanies and limit
+      const calculatedTotalPages = Math.ceil((response.numberOfCompanies || 0) / limit);
+      setTotalPages(calculatedTotalPages);
+      setPageNumber(pageNo);
+
+      console.log("Searching with pageNo:", pageNo);
+      console.log("Search results:", response);
+      console.log("Mapped companies:", mappedCompanies);
+      console.log("Total pages calculated:", calculatedTotalPages);
+      console.log("State will be updated - listOfCompanies, totalPages, pageNumber");
     } catch (error: any) {
+      console.error("Error in submitListOfCompaniesRequest:", error);
       alertDispatch({ type: 'setError', message: error.message })
     }
-
   }
 
 
   async function handlePageChange(event: any, value: number) {
-    // console.log("value is " + value);
-    // flushSync(
-    //   () => { setPageNumber(value); }  //TODO: check why pageNumber is not instantly updated
-    // );
-    // console.log("page changed to " + pageNumber);
+    console.log("=== PAGE CHANGE TRIGGERED ===");
+    console.log("New page value:", value);
     await submitListOfCompaniesRequest(value);
   }
 
   async function handleSubmitListOfCompaniesRequest(event: any) {
-    // flushSync(
-    //   () => { setPageNumber(1); } //TODO: check why pageNumber is not instantly updated
-    // );
-    // console.log("page changed to " + pageNumber);
+    console.log("=== SEARCH BUTTON CLICKED ===");
+    console.log("Current filters - subIndustries:", subIndustriesFilter, "query:", searchQuery);
     await submitListOfCompaniesRequest(1);
   }
 
@@ -100,8 +121,8 @@ const InvestingPage = () => {
         <CompanySearchSubIndustriesFilter
           list={subIndustries}
           checkedSubIndustries={subIndustriesFilter}
-          setCheckedSubIndustries={setSubIndustriesFilter}>
-        </CompanySearchSubIndustriesFilter> //TODO: check why CompanySearchSubIndustriesFilter not shown
+          setCheckedSubIndustries={setSubIndustriesFilter}
+        />
 
         <Stack direction="row" style={{ flex: 1, justifyContent: "end" }}>
           <Button
@@ -119,7 +140,15 @@ const InvestingPage = () => {
         <Stack direction="column" style={{ flex: 1 }}>
           <Stack direction="column" style={{ flex: 1 }}>
             <Stack direction="column" spacing={2} sx={{ margin: 3 }}>
-              {listOfCompanies.map((company) => (<CompanySearchResultPaper ticker={company.ticker} companyName={company.companyName} description={company.description} link={"/investing/" + company.ticker} />))}
+              {listOfCompanies.map((company) => (
+                <CompanySearchResultPaper
+                  key={company.ticker}
+                  ticker={company.ticker}
+                  companyName={company.companyName}
+                  description={company.description}
+                  link={company.link}
+                />
+              ))}
             </Stack>
             <Stack direction="row" style={{ flex: 1, justifyContent: "center" }}>
               <Pagination count={totalPages} page={pageNumber} color="primary" onChange={handlePageChange} />

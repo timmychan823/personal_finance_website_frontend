@@ -104,6 +104,34 @@ export async function getListOfCompaniesBasedOnQueryAndFilter(
     }
 }
 
+export async function searchCompaniesBySubIndustriesAndQuery(
+    subIndustries: string[],
+    searchQuery: string,
+    pageNumber: number = 1,
+    limit: number = 10
+): Promise<{ list_of_companies: any[], numberOfCompanies: number }> {
+    try {
+        const requestBody = {
+            subIndustries,
+            searchQuery,
+            limit,
+            pageNumber: pageNumber
+        };
+
+        console.log("Sending search request with body:", requestBody);
+
+        const response = await axiosInstance.post(NEWS_CONSTANTS.LIST_OF_COMPANIES_URL, requestBody);
+        const data = response.data;
+
+        console.log("Search response:", data);
+        return data;
+
+    } catch (error: unknown) {
+        console.error("companySearchService searchCompaniesBySubIndustriesAndQuery error", error);
+        throw error;
+    }
+}
+
 export async function getListOfCompanies(
     sectors: string[],
     subIndustries: string[],
