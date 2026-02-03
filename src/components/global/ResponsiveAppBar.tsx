@@ -13,23 +13,22 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { UserProfile } from "types/userProfile/interfaces";
 import { logout } from "services/AuthService/authService";
+import { useUserContext } from "contexts/userContext";
 
 interface IProps {
   pages: Array<string>;
   settings: Array<string>;
-  currentUserProfile: UserProfile;
 }
 
 const ResponsiveAppBar: FC<PropsWithChildren<IProps>> = ({
   pages,
   settings,
-  currentUserProfile,
 }) => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const { userProfile } = useUserContext();
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -122,8 +121,8 @@ const ResponsiveAppBar: FC<PropsWithChildren<IProps>> = ({
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
-                  alt={currentUserProfile.username}
-                  src={currentUserProfile.userImage}
+                  alt={userProfile?.username || "User"}
+                  src={userProfile?.userImage || ""}
                 />
               </IconButton>
             </Tooltip>

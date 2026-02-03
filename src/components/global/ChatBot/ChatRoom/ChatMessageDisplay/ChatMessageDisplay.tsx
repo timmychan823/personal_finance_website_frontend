@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useChatBotContext } from "contexts/chatBot";
+import { useUserContext } from "contexts/userContext";
 import { ChatMessage, TextMessage } from "types/chat/interfaces";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -10,13 +11,9 @@ import { UserProfile } from "types/userProfile/interfaces";
 
 export default function ChatMessageDisplay() {
   const { chatMessages } = useChatBotContext();
+  const { userProfile } = useUserContext();
   const lastItemRef = useRef<null | HTMLLIElement>(null);
 
-  const currentUserProfile: UserProfile = {
-    username: "Timmy Chan",
-    userImage:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png",
-  };
   const botProfile: UserProfile = {
     username: "Bot",
     userImage:
@@ -47,12 +44,12 @@ export default function ChatMessageDisplay() {
                   alt={
                     chatMessage.userID === "bot"
                       ? botProfile.username
-                      : currentUserProfile.username
+                      : userProfile?.username || "User"
                   }
                   src={
                     chatMessage.userID === "bot"
                       ? botProfile.userImage
-                      : currentUserProfile.userImage
+                      : userProfile?.userImage || ""
                   }
                 />
               </ListItemAvatar>
@@ -60,7 +57,7 @@ export default function ChatMessageDisplay() {
                 primary={
                   chatMessage.userID === "bot"
                     ? botProfile.username
-                    : currentUserProfile.username
+                    : userProfile?.username || "User"
                 }
                 secondary={textMessage.description}
                 style={{
