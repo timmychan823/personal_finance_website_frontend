@@ -6,3 +6,5 @@ export const LIST_OF_COMPANIES_URL =
   "http://localhost:8000/investment/listOfCompanies";
 export const LIST_OF_SECTORS_AND_SUBINDUSTRIES_URL =
   "http://localhost:8000/investment/listOfSectorsAndSubIndustries";
+export const STOCK_PRICE_PREDICTION_URL =
+  "http://localhost:8000/investment/predictedDailyReturn";

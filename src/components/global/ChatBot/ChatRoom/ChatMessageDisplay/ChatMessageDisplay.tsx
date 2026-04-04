@@ -8,6 +8,8 @@ import Avatar from "@mui/material/Avatar";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import { UserProfile } from "types/userProfile/interfaces";
+import Box from "@mui/material/Box";
+import ReactMarkdown from "react-markdown";
 
 export default function ChatMessageDisplay() {
   const { chatMessages } = useChatBotContext();
@@ -34,39 +36,46 @@ export default function ChatMessageDisplay() {
         if (chatMessage.fileFormat === "text") {
           const textMessage = chatMessage as TextMessage;
           return (
-            <ListItem
-              key={chatMessage.messageID}
-              ref={isLastItem ? lastItemRef : null}
-              alignItems="flex-start"
-            >
-              <ListItemAvatar>
-                <Avatar
-                  alt={
+            <>
+              <ListItem
+                key={chatMessage.messageID}
+                ref={isLastItem ? lastItemRef : null}
+                alignItems="center"
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    alt={
+                      chatMessage.userID === "bot"
+                        ? botProfile.username
+                        : userProfile?.username || "User"
+                    }
+                    src={
+                      chatMessage.userID === "bot"
+                        ? botProfile.userImage
+                        : userProfile?.userImage || ""
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
                     chatMessage.userID === "bot"
                       ? botProfile.username
                       : userProfile?.username || "User"
                   }
-                  src={
-                    chatMessage.userID === "bot"
-                      ? botProfile.userImage
-                      : userProfile?.userImage || ""
-                  }
+                // secondary={textMessage.description}
+                // style={{
+                //   maxWidth: "fit-content",
+                //   wordBreak: "break-word",
+                //   whiteSpace: "pre-line",
+                // }}
                 />
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  chatMessage.userID === "bot"
-                    ? botProfile.username
-                    : userProfile?.username || "User"
-                }
-                secondary={textMessage.description}
-                style={{
-                  maxWidth: "fit-content",
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              />
-            </ListItem>
+              </ListItem>
+              <Box sx={{ marginLeft: 1, marginRight: 1 }}>
+                <ReactMarkdown>
+                  {textMessage.description}
+                </ReactMarkdown>
+              </Box>
+            </>
           );
         } else {
           return (<></>)

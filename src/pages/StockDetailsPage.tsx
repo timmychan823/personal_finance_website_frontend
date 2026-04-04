@@ -13,11 +13,64 @@ import NewsPanel from "components/newsSummary/NewsPanel";
 import NewsStatPanel from "components/newsSummary/NewsStatPanel";
 import { useAlertContext } from "contexts/alert";
 import { LineChartData } from "types/chart/interface";
-import InvestmentDataPredictionChart from "components/investmentDataPrediction/investmentDataPredictionChart";
 import { getStockPriceData } from "services/InvestingService/stockPriceDataService";
 import { timeSeriesDatum } from "types/investingPrediction/interfaces";
 import { News } from "types/newsSummary/interfaces";
 import { NewsSummaryResponse } from "types/newsSummary/interfaces";
+import { STOCK_PRICE_PREDICTION_URL } from "constants/newsSummary";
+
+interface PredictionData {
+    ticker: string;
+    prediction: number;
+    prediction_date: string;
+    prediction_text: string;
+    message: string;
+}
+
+const StockPredictionComponent = ({ ticker }: { ticker: string }) => {
+    const [predictionData, setPredictionData] = useState<PredictionData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchPrediction = async () => {
+            try {
+                const response = await fetch(`${STOCK_PRICE_PREDICTION_URL}?ticker=${ticker}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch prediction data');
+                }
+                const data: PredictionData = await response.json();
+                setPredictionData(data);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (ticker) {
+            fetchPrediction();
+        }
+    }, [ticker]);
+
+    if (loading) return <Typography>Loading prediction...</Typography>;
+    if (error) return <Typography color="error">Error: {error}</Typography>;
+    if (!predictionData) return <Typography>No prediction data available</Typography>;
+
+    return (
+        <Stack direction="column" alignItems="center" spacing={1}>
+            <Typography
+                variant="h4"
+                sx={{ color: predictionData.prediction_text === "UP" ? "green" : "red" }}
+            >
+                {predictionData.prediction_text}
+            </Typography>
+            <Typography variant="body1">
+                {predictionData.prediction_date}
+            </Typography>
+        </Stack>
+    );
+};
 
 const StockDetailsPage = () => {
     const { ticker } = useParams();
@@ -73,7 +126,7 @@ const StockDetailsPage = () => {
     return (
         <Fragment>
             <Typography variant="h3" display="block">Ticker: {ticker}</Typography>
-            <InvestmentDataPredictionChart actualData={stockPriceActualData} predictedData={stockPricePredictedData} />
+            <StockPredictionComponent ticker={ticker!} />
             <Stack direction="column">
                 <Stack direction="column" style={{ flex: 1 }}>
                     {/* <NewsStatPanel timeSeriesData={timeSeriesData} sentiment={sentiment} /> */}

@@ -107,9 +107,7 @@ const InvestingPage = () => {
 
   return (
     <Fragment>
-      <Typography variant="h3" display="block">Portfolio</Typography>
-      {/* <InvestmentDataPredictionChart actualData={stockPriceActualData} predictedData={stockPricePredictedData} /> //TODO: retrieve info from Interactive Broker Account Provided and show portfolio actual value and portfolio expected value in the future*/}
-      <Typography variant="h3" display="block">Companies</Typography>
+      <Typography variant="h3" display="block" sx={{ marginBottom: 2 }}>Company Search</Typography>
       <Stack direction="column">
         <TextField
           label="Search for Companies By Ticker"

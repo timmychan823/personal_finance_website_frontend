@@ -21,8 +21,21 @@ const ChatRoom = () => {
     const newSocket = io.connect(WEBSOCKET_URL, {
       extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
+      }
     });
+
+    newSocket.on("error", (error) => {
+      console.error("WebSocket connection error:", error);
+    });
+
+    newSocket.on("connect", () => {
+      console.log("WebSocket connected with ID:", newSocket.id);
+    });
+
+    newSocket.on("disconnect", (reason) => {
+      console.log("WebSocket disconnected:", reason);
+    });
+
     newSocket.on("textMessageServerResponse", (message) => {
       console.log(message.textMessageServerResponse);
       const incomingChatMessage: TextMessage = {
@@ -37,6 +50,7 @@ const ChatRoom = () => {
     });
     setSocket(newSocket);
 
+    console.log(newSocket.id);
     return () => {
       setSocket((socket) => {
         socket.disconnect();
