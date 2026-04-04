@@ -118,7 +118,7 @@ const ResponsiveAppBar: FC<PropsWithChildren<IProps>> = ({
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={userProfile?.username || "User"}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt={userProfile?.username || "User"}

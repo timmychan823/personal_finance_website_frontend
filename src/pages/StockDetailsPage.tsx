@@ -74,12 +74,6 @@ const StockDetailsPage = () => {
         <Fragment>
             <Typography variant="h3" display="block">Ticker: {ticker}</Typography>
             <InvestmentDataPredictionChart actualData={stockPriceActualData} predictedData={stockPricePredictedData} />
-            <Stack direction="row" spacing={2} sx={{ justifyContent: "end" }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker label="Start Time" />
-                    <DateTimePicker label="End time" />
-                </LocalizationProvider>
-            </Stack>
             <Stack direction="column">
                 <Stack direction="column" style={{ flex: 1 }}>
                     {/* <NewsStatPanel timeSeriesData={timeSeriesData} sentiment={sentiment} /> */}

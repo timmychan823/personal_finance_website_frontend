@@ -12,7 +12,7 @@ const AuthorizedPageWrapper = () => {
   const userState = useUserContextState();
 
   const pages = ["financing", "investing"];
-  const settings = ["profile", "logout"];
+  const settings = ["logout"];
 
   return (
     <UserContext.Provider value={userState}>
