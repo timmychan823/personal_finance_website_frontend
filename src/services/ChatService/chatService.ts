@@ -1,17 +1,24 @@
-import axios from "providers/axiosInstance";
+// import axios from "providers/axiosInstance";
 import { io } from "socket.io-client";
+import { refreshToken } from "services/AuthService/authService";
+import { isTokenExpired } from "helpers/authUtils";
+import router from "router";
 
 export async function sendTextMessage(socket: io, textMessage: string) {
-  //TODO: testing, change this to actual method later
-  // try{
-  //     const response = await axios.get(
-  //         "http://www.google.com"
-  //     );
-  //     const data = await response.json();
-  //     console.log("sendTextMessage success");
-  // }catch{
-  //     //pass
-  //     console.error("sendTextMessage error"); //TODO: dispatch an error, showing a invalid pop up or something like that
-  // }
-  socket.emit("textMessage", { textMessage: textMessage });
+  let accessToken: string = localStorage.getItem("accessToken") ?? "";
+  const refresh_token: string = localStorage.getItem("refreshToken") ?? "";
+
+  if (isTokenExpired(refresh_token)) {
+    router.navigate("/login");
+  }
+
+  if (isTokenExpired(accessToken) && !isTokenExpired(refresh_token)) {
+    await refreshToken(refresh_token);
+    console.log(`Token refreshed: ${accessToken}`);
+  }
+  accessToken = localStorage.getItem("accessToken") ?? "";
+  console.log(`Using access token: ${accessToken}`);
+
+  socket.emit("textMessage", { token: accessToken, textMessage: textMessage });
+
 }

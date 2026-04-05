@@ -13,10 +13,7 @@ import { TextMessage } from "types/chat/interfaces";
 const ChatRoom = () => {
   const {
     chatRoomDisplayStatus,
-    setChatRoomDisplayStatus,
-    chatMessages,
     setChatMessages,
-    socket,
     setSocket,
   } = useChatBotContext();
 
@@ -24,10 +21,23 @@ const ChatRoom = () => {
     const newSocket = io.connect(WEBSOCKET_URL, {
       extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
+      }
     });
+
+    newSocket.on("error", (error) => {
+      console.error("WebSocket connection error:", error);
+    });
+
+    newSocket.on("connect", () => {
+      console.log("WebSocket connected with ID:", newSocket.id);
+    });
+
+    newSocket.on("disconnect", (reason) => {
+      console.log("WebSocket disconnected:", reason);
+    });
+
     newSocket.on("textMessageServerResponse", (message) => {
-      console.log(message.textMessageServerResponse); //TODO: add text/ voice messsage into the chatMessageDisplay later
+      console.log(message.textMessageServerResponse);
       const incomingChatMessage: TextMessage = {
         messageID: Date.now().toString(),
         messageStatus: "received",
@@ -40,6 +50,7 @@ const ChatRoom = () => {
     });
     setSocket(newSocket);
 
+    console.log(newSocket.id);
     return () => {
       setSocket((socket) => {
         socket.disconnect();

@@ -46,7 +46,7 @@ export default function PromptBar() {
     };
     setChatMessages([...chatMessages, textMessageToBeSent]);
     //add send message to backend service and logic later
-    sendTextMessage(socket, textMessageToBeSent.description); //TODO: change this to actual method and correct object type later
+    sendTextMessage(socket, textMessageToBeSent.description);
     setTextMessageToBeSent("");
   }
 
@@ -71,6 +71,7 @@ export default function PromptBar() {
       <IconButton
         aria-label="sendChatMessageButton"
         size="small"
+        disabled={textMessageToBeSent.trim() === ""}
         onClick={() => handleSendTextMessage(textMessageToBeSent)}
         style={{ margin: "0px 10px" }}
       >

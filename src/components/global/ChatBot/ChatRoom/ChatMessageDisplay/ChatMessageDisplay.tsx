@@ -1,24 +1,21 @@
 import { useEffect, useRef } from "react";
 import { useChatBotContext } from "contexts/chatBot";
-import Paper from "@mui/material/Paper";
+import { useUserContext } from "contexts/userContext";
 import { ChatMessage, TextMessage } from "types/chat/interfaces";
-import Stack from "@mui/material/Stack";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Avatar from "@mui/material/Avatar";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import { UserProfile } from "types/userProfile/interfaces";
+import Box from "@mui/material/Box";
+import ReactMarkdown from "react-markdown";
 
 export default function ChatMessageDisplay() {
   const { chatMessages } = useChatBotContext();
-  const lastItemRef = useRef(null);
+  const { userProfile } = useUserContext();
+  const lastItemRef = useRef<null | HTMLLIElement>(null);
 
-  const currentUserProfile: UserProfile = {
-    username: "Timmy Chan",
-    userImage:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png",
-  };
   const botProfile: UserProfile = {
     username: "Bot",
     userImage:
@@ -39,40 +36,49 @@ export default function ChatMessageDisplay() {
         if (chatMessage.fileFormat === "text") {
           const textMessage = chatMessage as TextMessage;
           return (
-            <ListItem
-              key={chatMessage.messageID}
-              ref={isLastItem ? lastItemRef : null}
-              alignItems="flex-start"
-            >
-              <ListItemAvatar>
-                <Avatar
-                  alt={
+            <>
+              <ListItem
+                key={chatMessage.messageID}
+                ref={isLastItem ? lastItemRef : null}
+                alignItems="center"
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    alt={
+                      chatMessage.userID === "bot"
+                        ? botProfile.username
+                        : userProfile?.username || "User"
+                    }
+                    src={
+                      chatMessage.userID === "bot"
+                        ? botProfile.userImage
+                        : userProfile?.userImage || ""
+                    }
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
                     chatMessage.userID === "bot"
                       ? botProfile.username
-                      : currentUserProfile.username
+                      : userProfile?.username || "User"
                   }
-                  src={
-                    chatMessage.userID === "bot"
-                      ? botProfile.userImage
-                      : currentUserProfile.userImage
-                  }
+                // secondary={textMessage.description}
+                // style={{
+                //   maxWidth: "fit-content",
+                //   wordBreak: "break-word",
+                //   whiteSpace: "pre-line",
+                // }}
                 />
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  chatMessage.userID === "bot"
-                    ? botProfile.username
-                    : currentUserProfile.username
-                }
-                secondary={textMessage.description}
-                style={{
-                  maxWidth: "fit-content",
-                  wordBreak: "break-word",
-                  whiteSpace: "pre-line",
-                }}
-              />
-            </ListItem>
+              </ListItem>
+              <Box sx={{ marginLeft: 1, marginRight: 1 }}>
+                <ReactMarkdown>
+                  {textMessage.description}
+                </ReactMarkdown>
+              </Box>
+            </>
           );
+        } else {
+          return (<></>)
         }
       })}
     </List>

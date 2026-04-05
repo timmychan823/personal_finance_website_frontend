@@ -5,15 +5,9 @@ import { flushSync } from "react-dom";
 
 export default function AlertNotification() {
   // useContext
-  const { severity, alertMessage, setSeverity, setAlertMessage } =
-    useAlertContext();
+  const { severity, message, alertDispatch } = useAlertContext();
   const handleClose = () => {
-    flushSync(() => {
-      setSeverity(null);
-    });
-    flushSync(() => {
-      setAlertMessage("");
-    });
+    alertDispatch({ type: 'setNull', message: null })
   };
 
   return (
@@ -29,12 +23,11 @@ export default function AlertNotification() {
           minHeight: 200,
           overflow: "clip",
           position: "fixed",
-          top: 20,
-          right: 20,
         }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <Alert severity={severity} variant="filled" sx={{ width: "100%" }}>
-          {alertMessage}
+          {message}
         </Alert>
       </Snackbar>
     )

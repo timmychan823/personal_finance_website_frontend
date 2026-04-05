@@ -1,7 +1,5 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Navigate } from "react-router-dom";
-
-import { useErrorContext } from "contexts/error";
 
 interface IProps {
   redirect: string;

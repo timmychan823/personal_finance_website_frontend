@@ -22,6 +22,7 @@ export async function authenticate(username: string, password: string) {
     if (!response.ok) {
       // response.ok is true for 2xx status codes
       const errorBody = await response.json(); // Or response.text() depending on content type
+      console.debug(errorBody)
       throw new Error(
         `HTTP Error: ${response.status} - ${response.statusText || "Unknown error"}`,
       );
@@ -56,11 +57,12 @@ export async function refreshToken(refresh_token: string) {
     });
     data = await response.json();
     console.log("refresh success");
-  } catch {
-    console.error("refresh error"); //TODO: dispatch an error, showing a invalid pop up or something like that
+    localStorage.setItem("accessToken", data.access_token); //TODO: CRUD on localStorage should not be done in service
+    localStorage.setItem("refreshToken", data.refresh_token);
+  } catch (error) {
+    console.error("refresh error:", error); //TODO: dispatch an error, showing a invalid pop up or something like that
+    throw error; // Re-throw the error so the interceptor can handle it
   }
-  localStorage.setItem("accessToken", data.access_token); //TODO: CRUD on localStorage should not be done in service
-  localStorage.setItem("refreshToken", data.refresh_token);
 }
 
 export async function logout(refresh_token: string) {
@@ -76,6 +78,9 @@ export async function logout(refresh_token: string) {
         refresh_token: refresh_token,
       }),
     });
+
+    console.debug(response)
+
     console.log("logout success");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken"); //TODO: CRUD on localStorage should not be done in service

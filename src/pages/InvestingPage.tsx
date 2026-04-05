@@ -1,10 +1,159 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { Stack, Divider, Chip, Typography } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SearchIcon from "@mui/icons-material/Search";
+import Button from "@mui/material/Button";
+import Autocomplete from '@mui/material/Autocomplete';
+import {
+  getListOfNews,
+  getListOfUniqueCompanies,
+} from "services/InvestingService/newsSummaryService";
+import { getSectorsAndSubIndustries, searchCompaniesBySubIndustriesAndQuery } from "services/InvestingService/companySearchService";
+import { useAlertContext } from "contexts/alert";
+import CompanySearchResultPaper from "components/companySearch/companySearchResultPaper";
+import TextField from "@mui/material/TextField";
+import { CompanySearchResult } from "types/searchResult/interfaces";
+import { flushSync } from "react-dom";
+import CompanySearchSubIndustriesFilter from "components/companySearch/companySearchSubIndustriesFilter";
 
 const InvestingPage = () => {
-  //TODO: use sub in decoded access token to define what data it can see
+  const [searchQuery, setSearchQuery] = useState("");
+  const [subIndustriesFilter, setSubIndustriesFilter] = useState<string[]>([]);
+  const [listOfCompanies, setListOfCompanies] = useState<CompanySearchResult[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [subIndustries, setSubIndustries] = useState<{ sector: string, subIndustries: string[] }[]>([]);
+
+  const { alertDispatch } = useAlertContext();
+
+  async function findAllSectorsAndSubIndustries() {
+    try {
+      let data = await getSectorsAndSubIndustries(); //TODO: why no data returned here
+      setSubIndustries(data); //TODO: why no subIndustries set here
+    } catch (error: any) {
+      alertDispatch({ type: 'setError', message: error.message })
+    }
+  }
+
+  async function submitListOfCompaniesRequest(pageNo: number) {
+    try {
+      const limit = 10;
+      const response = await searchCompaniesBySubIndustriesAndQuery(
+        subIndustriesFilter,
+        searchQuery,
+        pageNo,
+        limit
+      );
+
+      // Map companies from response
+      let mappedCompanies: any[] = [];
+      if (response.list_of_companies && response.list_of_companies.length > 0) {
+        mappedCompanies = response.list_of_companies.map((company: any) => ({
+          ticker: company.ticker,
+          companyName: company.companyName,
+          description: company.subIndustry,
+          link: `/investing/${company.ticker}`
+        }));
+        setListOfCompanies(mappedCompanies);
+      } else {
+        setListOfCompanies([]);
+      }
+
+      // Calculate total pages based on numberOfCompanies and limit
+      const calculatedTotalPages = Math.ceil((response.numberOfCompanies || 0) / limit);
+      setTotalPages(calculatedTotalPages);
+      setPageNumber(pageNo);
+
+      console.log("Searching with pageNo:", pageNo);
+      console.log("Search results:", response);
+      console.log("Mapped companies:", mappedCompanies);
+      console.log("Total pages calculated:", calculatedTotalPages);
+      console.log("State will be updated - listOfCompanies, totalPages, pageNumber");
+    } catch (error: any) {
+      console.error("Error in submitListOfCompaniesRequest:", error);
+      alertDispatch({ type: 'setError', message: error.message })
+    }
+  }
+
+
+  async function handlePageChange(event: any, value: number) {
+    console.log("=== PAGE CHANGE TRIGGERED ===");
+    console.log("New page value:", value);
+    await submitListOfCompaniesRequest(value);
+  }
+
+  async function handleSubmitListOfCompaniesRequest(event: any) {
+    console.log("=== SEARCH BUTTON CLICKED ===");
+    console.log("Current filters - subIndustries:", subIndustriesFilter, "query:", searchQuery);
+    await submitListOfCompaniesRequest(1);
+  }
+
+  function handleChangeOfSelectedSubIndustries(event: any, values: { sector: string, subIndustry: string }[]) {
+    let newSubIndustries: string[] = [];
+    values.forEach((value) => { newSubIndustries.push(value.subIndustry); });
+    setSubIndustriesFilter((prevSubIndustriesFilter: any) => {
+      return { ...prevSubIndustriesFilter, newSubIndustries };
+    });
+  }
+
+  useEffect(() => {
+    findAllSectorsAndSubIndustries();
+  }, []);
+
+
   return (
     <Fragment>
-      <h1>Investing Page</h1>
+      <Typography variant="h3" display="block" sx={{ marginBottom: 2 }}>Company Search</Typography>
+      <Stack direction="column">
+        <TextField
+          label="Search for Companies By Ticker"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value.trim())}
+          sx={{ marginBottom: 2, minWidth: 400 }}
+        />
+        <CompanySearchSubIndustriesFilter
+          list={subIndustries}
+          checkedSubIndustries={subIndustriesFilter}
+          setCheckedSubIndustries={setSubIndustriesFilter}
+        />
+
+        <Stack direction="row" style={{ flex: 1, justifyContent: "end" }}>
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            endIcon={<SearchIcon />}
+            sx={{ margin: "10px 10px" }}
+            onClick={handleSubmitListOfCompaniesRequest}
+          >
+            Search
+          </Button>
+        </Stack>
+        <Stack direction="column" style={{ flex: 1 }}>
+          <Stack direction="column" style={{ flex: 1 }}>
+            <Stack direction="column" spacing={2} sx={{ margin: 3 }}>
+              {listOfCompanies.map((company) => (
+                <CompanySearchResultPaper
+                  key={company.ticker}
+                  ticker={company.ticker}
+                  companyName={company.companyName}
+                  description={company.description}
+                  link={company.link}
+                />
+              ))}
+            </Stack>
+            <Stack direction="row" style={{ flex: 1, justifyContent: "center" }}>
+              <Pagination count={totalPages} page={pageNumber} color="primary" onChange={handlePageChange} />
+            </Stack>
+          </Stack>
+        </Stack>
+      </Stack>
     </Fragment>
   );
 };

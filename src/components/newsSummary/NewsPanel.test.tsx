@@ -4,7 +4,6 @@ import { News } from "types/newsSummary/interfaces";
 
 describe("NewsPanel", () => {
   const testingNews: News = {
-    newsDescription: "Testing description",
     newsLink: "http://www.testing.com",
     newsPublishTime: "2025-07-12",
     newsSource: "Testing News",
@@ -13,7 +12,6 @@ describe("NewsPanel", () => {
     newsSentiment: 0.6,
   };
   const testingNews2: News = {
-    newsDescription: "Testing description 2",
     newsLink: "http://www.testing2.com",
     newsPublishTime: "2025-07-12",
     newsSource: "Testing News 2",

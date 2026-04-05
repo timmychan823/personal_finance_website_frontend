@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useState, MouseEvent, useEffect } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import InputLabel from "@mui/material/InputLabel";
@@ -6,19 +6,13 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import FormControl from "@mui/material/FormControl";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
-import Keycloak from "keycloak-js";
-import {
-  authenticate,
-  refreshToken,
-  logout,
-} from "services/AuthService/authService";
+import { authenticate } from "services/AuthService/authService";
 import { useNavigate } from "react-router-dom";
 import { useAlertContext } from "contexts/alert";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { setSeverity, setAlertMessage } = useAlertContext();
+  const { alertDispatch } = useAlertContext();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -37,8 +31,7 @@ export default function LoginForm() {
       await authenticate(formData.username, formData.password);
       navigate("/");
     } catch (error: unknown) {
-      setSeverity("error");
-      setAlertMessage(error.message);
+      alertDispatch({ type: 'setError', message: error.message })
     }
   }
 
